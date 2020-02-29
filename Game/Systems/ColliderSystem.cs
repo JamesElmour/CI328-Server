@@ -25,10 +25,17 @@ namespace PIGMServer.Game.Systems
             {
                 if(Collides(component, other))
                 {
-                    component.Colliding = true;
-                    component.CollidingWith.Add()
+                    ExecuteCollision(component, other);
                 }
             }
+        }
+        private void ExecuteCollision(Collider component, Collider other)
+        {
+            string tag = other.Parent.Tag;
+            component.Colliding = true;
+
+            if(!component.CollidingWith.Contains(tag))
+                component.CollidingWith.Add(tag);
         }
 
         private bool Collides(Collider a, Collider b)
