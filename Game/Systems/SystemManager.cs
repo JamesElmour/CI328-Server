@@ -47,7 +47,7 @@ namespace PIGMServer.Game.Systems
             return system.GetComponent(component);
         }
 
-        public static Type FindSystemType(SystemTypes systemType)
+        public static Type GetSystemFromType(SystemTypes systemType)
         {
             switch (systemType)
             {
