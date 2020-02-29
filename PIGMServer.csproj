@@ -55,6 +55,7 @@
     <Compile Include="Game\IGameComponent.cs" />
     <Compile Include="Game\IGameSystem.cs" />
     <Compile Include="Game\Systems\BallSystem.cs" />
+    <Compile Include="Game\Systems\BrickSystem.cs" />
     <Compile Include="Game\Systems\ColliderSystem.cs" />
     <Compile Include="Game\Systems\SystemManager.cs" />
     <Compile Include="Game\Types\Rectangle.cs" />
