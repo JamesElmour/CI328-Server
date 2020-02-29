@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PIGMServer.Game.Systems;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace PIGMServer.Game
         public      string      Name        { get; private set; }
         public      bool        Altered =   false;
         public      GameEntity  Parent;
-        public      Type        System;
+        public      SystemTypes System  = SystemTypes.Unknown;
         protected   List<KeyValuePair<string, byte[]>> Alterations = new List<KeyValuePair<string, byte[]>>();
 
         public GameComponent(GameEntity parent)
@@ -33,7 +34,7 @@ namespace PIGMServer.Game
                 Altered = false;
             }
         }
-
+         
         public bool IsAltered() => Altered;
         public List<KeyValuePair<string, byte[]>> GetAlterations() => Alterations;
     }

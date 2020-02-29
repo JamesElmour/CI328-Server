@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PIGMServer.Game.Systems;
 using PIGMServer.Game.Types;
 
 namespace PIGMServer.Game
@@ -11,7 +12,7 @@ namespace PIGMServer.Game
     {
         public string Name { get; protected set; }
         public string Tag { get; protected set; }
-        private Dictionary<string, Type> Components = new Dictionary<string, Type>();
+        private Dictionary<SystemTypes, string> Components = new Dictionary<SystemTypes, string>();
         public Vector2 Position;
 
         public GameEntity(string name, Vector2 position = null, string tag = "")
@@ -24,7 +25,14 @@ namespace PIGMServer.Game
             Tag = tag;
         }
 
-        public void AddComponent(GameComponent component) => Components.Add(component.Name, component.System);
-        public void RemoveComponent(GameComponent component) => Components.Remove(component.Name);
+        public void Add(GameComponent component) => Components.Add(component.System, component.Name);
+        public void Remove(GameComponent component) => Components.Remove(component.System);
+        public string Get(SystemTypes type) => Components[type];
+        public T Find<T>(SystemTypes type) where T : GameComponent
+        {
+            string component = Get(type);
+            return (T) SystemManager.GetComponent(type, component); ;
+        }
+
     }
 }
