@@ -66,6 +66,7 @@ namespace PIGMServer.Game
 
         protected abstract void Process(T component, float deltaTime);
 
-        public T GetComponent(string name) => Components[name];
+        public T Get(string name) => Components[name];
+        public void Remove(string name) => Components.Remove(name);
     }
 }

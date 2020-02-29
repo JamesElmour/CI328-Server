@@ -10,5 +10,6 @@ namespace PIGMServer.Game
     {
         void Update(float deltaTime);
         void Clear();
+        public void Remove(string name)
     }
 }

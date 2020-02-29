@@ -29,7 +29,7 @@ namespace PIGMServer.Game.Systems
 
         private void Destroy(Brick brick)
         {
-
+            brick.Parent.Destroy();
         }
     }
 }

@@ -37,17 +37,14 @@ namespace PIGMServer.Game.Systems
             }
         }
 
-        public static void Clear(SystemTypes type)
-            => Systems[type].Clear();
-
-        public static IGameComponent GetComponent(SystemTypes systemType, string component)
+        public static IGameComponent Get(SystemTypes systemType, string component)
         {
             GameSystem<IGameComponent> system =
                 (GameSystem<IGameComponent>) Systems[systemType];
-            return system.GetComponent(component);
+            return system.Get(component);
         }
 
-        public static Type GetSystemFromType(SystemTypes systemType)
+        public static Type GetSystemClassFromType(SystemTypes systemType)
         {
             switch (systemType)
             {
@@ -67,7 +64,10 @@ namespace PIGMServer.Game.Systems
                 default:
                     throw new Exception("Invalid System Type provided.");
             }
-
         }
+        
+        public static void Clear(SystemTypes type)
+            => Systems[type].Clear();
+        public static void Remove(SystemTypes type, string name) => Systems[type].Remove(name);
     }
 }

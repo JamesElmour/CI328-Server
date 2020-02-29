@@ -26,12 +26,19 @@ namespace PIGMServer.Game
         }
 
         public void Add(GameComponent component) => Components.Add(component.System, component.Name);
-        public void Remove(GameComponent component) => Components.Remove(component.System);
+        public void Destroy()
+        {
+            foreach (KeyValuePair <SystemTypes, string> pair in Components)
+            {
+                SystemManager.Remove(pair.Key, pair.Value);
+            }
+        }
+
         public string Get(SystemTypes type) => Components[type];
         public T Find<T>(SystemTypes type) where T : GameComponent
         {
             string component = Get(type);
-            return (T) SystemManager.GetComponent(type, component); ;
+            return (T) SystemManager.Get(type, component); ;
         }
 
     }
