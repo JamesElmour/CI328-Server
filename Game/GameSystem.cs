@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PIGMServer.Game.Systems;
 
 namespace PIGMServer.Game
 {
@@ -68,5 +69,6 @@ namespace PIGMServer.Game
 
         public T Get(string name) => Components[name];
         public void Remove(string name) => Components.Remove(name);
+        public abstract SystemTypes GetSystemType();
     }
 }

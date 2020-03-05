@@ -24,9 +24,11 @@ namespace PIGMServer.Game.Systems
         private static readonly Dictionary<SystemTypes, IGameSystem> Systems =
             new Dictionary<SystemTypes, IGameSystem>();
 
-        public static void Add(IGameSystem system, SystemTypes type)
+        public static void Add(IGameSystem system)
         {
             Type systemType = system.GetType();
+            SystemTypes type = system.GetSystemType();
+
             if (Systems.ContainsKey(type))
             {
                 Systems[type].Clear();

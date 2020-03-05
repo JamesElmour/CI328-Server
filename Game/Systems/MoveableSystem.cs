@@ -17,5 +17,9 @@ namespace PIGMServer.Game.Systems
 
             component.Parent.Position = position + (position * (velocity * deltaTime));
         }
+        public override SystemTypes GetSystemType()
+        {
+            return SystemTypes.Movable;
+        }
     }
 }

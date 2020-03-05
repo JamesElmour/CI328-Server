@@ -31,5 +31,9 @@ namespace PIGMServer.Game.Systems
         {
             brick.Parent.Destroy();
         }
+        public override SystemTypes GetSystemType()
+        {
+            return SystemTypes.Brick;
+        }
     }
 }

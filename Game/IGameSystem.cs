@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PIGMServer.Game.Systems;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace PIGMServer.Game
     {
         void Update(float deltaTime);
         void Clear();
-        public void Remove(string name)
+        void Remove(string name);
+        SystemTypes GetSystemType();
     }
 }

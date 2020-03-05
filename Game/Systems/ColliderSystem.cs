@@ -42,5 +42,9 @@ namespace PIGMServer.Game.Systems
         {
             return Rectangle.Intersects(a.Rect, b.Rect);
         }
+        public override SystemTypes GetSystemType()
+        {
+            return SystemTypes.Collide;
+        }
     }
 }

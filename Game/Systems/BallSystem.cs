@@ -13,5 +13,9 @@ namespace PIGMServer.Game.Systems
         {
 
         }
+        public override SystemTypes GetSystemType()
+        {
+            return SystemTypes.Ball;
+        }
     }
 }
