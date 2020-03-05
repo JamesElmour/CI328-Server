@@ -54,22 +54,41 @@ namespace PIGMServer.Game.Types
         #region Operators
         public static Vector2 operator +(Vector2 a, Vector2 b)
         {
-            return new Vector2(a.x + b.x, a.x + b.x);
+            return new Vector2((short)(a.x + b.x), (short)(a.x + b.x));
         }
 
         public static Vector2 operator -(Vector2 a, Vector2 b)
         {
-            return new Vector2(a.x - b.x, a.x - b.x);
+            return new Vector2((short)(a.x - b.x), (short)(a.x - b.x));
         }
 
         public static Vector2 operator *(Vector2 a, Vector2 b)
         {
-            return new Vector2(a.x * b.x, a.x * b.x);
+            return new Vector2((short)(a.x * b.x), (short)(a.x * b.x));
         }
 
         public static Vector2 operator /(Vector2 a, Vector2 b)
         {
-            return new Vector2(a.x / b.x, a.x / b.x);
+            return new Vector2((short)(a.x / b.x), (short)(a.x / b.x));
+        }
+        public static Vector2 operator +(Vector2 a, float b)
+        {
+            return new Vector2((short)(a.x + b), (short)(a.x + b));
+        }
+
+        public static Vector2 operator -(Vector2 a, float b)
+        {
+            return new Vector2((short)(a.x - b), (short)(a.x - b));
+        }
+
+        public static Vector2 operator *(Vector2 a, float b)
+        {
+            return new Vector2((short)(a.x * b), (short)(a.x * b));
+        }
+
+        public static Vector2 operator /(Vector2 a, float b)
+        {
+            return new Vector2((short)(a.x / b), (short)(a.x / b));
         }
         #endregion
     }
