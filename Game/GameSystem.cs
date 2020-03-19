@@ -13,10 +13,11 @@ namespace PIGMServer.Game
         protected readonly Dictionary<string, T> Components = new Dictionary<string, T>(ComponentLimit);
         protected readonly List<T> AlteredComponents        = new List<T>(ComponentLimit);
         protected readonly List<T> TemporaryComponents      = new List<T>(ComponentLimit);
+        protected readonly string WorldName;
 
-        public GameSystem()
+        public GameSystem(string worldName)
         {
-
+            WorldName = worldName;
         }
 
         public void Update(float deltaTime)
@@ -67,8 +68,24 @@ namespace PIGMServer.Game
 
         protected abstract void Process(T component, float deltaTime);
 
-        public T Get(string name) => Components[name];
-        public void Remove(string name) => Components.Remove(name);
+        public T Get(string name)
+        {
+            return Components[name];
+        }
+
+        public void Remove(string name)
+        {
+            Components.Remove(name);
+        }
+
+        public void Add(T component)
+        {
+            string name = component.GetParent.Name;
+            Components.Add(name, component);
+
+            SystemManager.MapComponentWorld(WorldName, name);
+        }
+
         public abstract SystemTypes GetSystemType();
     }
 }

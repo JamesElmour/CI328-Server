@@ -8,6 +8,7 @@ namespace PIGMServer.Game
 {
     public interface IGameComponent
     {
+        GameEntity GetParent { get; }
         bool IsAltered();
         List<KeyValuePair<string, byte[]>> GetAlterations();
     }

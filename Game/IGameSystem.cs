@@ -12,6 +12,7 @@ namespace PIGMServer.Game
         void Update(float deltaTime);
         void Clear();
         void Remove(string name);
+        //IGameComponent Get(string name);
         SystemTypes GetSystemType();
     }
 }

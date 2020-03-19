@@ -98,10 +98,12 @@
     <Compile Include="Game\Systems\PowerUpSystem.cs" />
     <Compile Include="Game\Systems\SystemManager.cs" />
     <Compile Include="Game\Types\Rectangle.cs" />
+    <Compile Include="Game\Worlds\Levels\BreakoutOverworld.cs" />
     <Compile Include="Game\Worlds\Levels\BreakoutWorld.cs" />
     <Compile Include="Game\Worlds\OverWorld.cs" />
     <Compile Include="Game\GameSystem.cs" />
     <Compile Include="Game\Worlds\SubWorld.cs" />
+    <Compile Include="Game\Worlds\World.cs" />
     <Compile Include="Game\Worlds\WorldSlice.cs" />
     <Compile Include="Game\Systems\MoveableSystem.cs" />
     <Compile Include="Game\Types\Vector2.cs" />
