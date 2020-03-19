@@ -10,6 +10,9 @@ namespace PIGMServer.Game.Systems
 {
     public class MoveableSystem : GameSystem<Movable>
     {
+        public MoveableSystem(string worldName) : base(worldName)
+        { }
+
         protected override void Process(Movable component, float deltaTime)
         {
             Vector2 position = component.Parent.Position;

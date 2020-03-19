@@ -9,10 +9,14 @@ namespace PIGMServer.Game.Systems
 {
     public class BallSystem : GameSystem<Ball>
     {
+        public BallSystem(string worldName) : base(worldName)
+        { }
+
         protected override void Process(Ball component, float deltaTime)
         {
 
         }
+
         public override SystemTypes GetSystemType()
         {
             return SystemTypes.Ball;

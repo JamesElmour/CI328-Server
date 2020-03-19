@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PIGMServer.Game.Worlds
 {
-    public class OverWorld : GameClientHandler
+    public abstract class OverWorld : GameClientHandler
     {
         public enum WorldStates
         {
@@ -29,14 +29,26 @@ namespace PIGMServer.Game.Worlds
             Tps = tps;
             DeltaTime = 1 / tps;
 
-
+            Start();
         }
 
         public void Start()
         {
+            CreateSubWorlds();
             CalculateSliceCount();
             GenerateWorldSlices();
         }
+
+        /// <summary>
+        /// Add SubWorld to the OverWorld.
+        /// </summary>
+        /// <param name="world">SubWorld to be added.</param>
+        protected void AddSubWorld(SubWorld world)
+        {
+            SubWorlds.Add(world);
+        }
+
+        protected abstract void CreateSubWorlds();
 
         #region World Slices and Updating
         /// <summary>
@@ -45,7 +57,7 @@ namespace PIGMServer.Game.Worlds
         private void CalculateSliceCount()
         {
             int worldCount = SubWorlds.Count;
-            SliceCount = worldCount / SubworldsPerFrame;
+            SliceCount = (int) Math.Ceiling((float) worldCount / SubworldsPerFrame);
         }
 
         /// <summary>
@@ -67,9 +79,10 @@ namespace PIGMServer.Game.Worlds
         private WorldSlice CreateSlice(int index)
         {
             int start = index * SubworldsPerFrame;
+            int end   = (SubWorlds.Count < SubworldsPerFrame) ? SubWorlds.Count : SubworldsPerFrame;
 
             WorldSlice slice = new WorldSlice();
-            slice.AddRange(SubWorlds.GetRange(start, SubworldsPerFrame));
+            slice.AddRange(SubWorlds.GetRange(start, end));
 
             return slice;
         }

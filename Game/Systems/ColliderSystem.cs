@@ -10,6 +10,9 @@ namespace PIGMServer.Game.Systems
 {
     public class ColliderSystem : GameSystem<Collider>
     {
+        public ColliderSystem(string worldName) : base(worldName)
+        { }
+
         protected override void Preprocess(Collider component)
         {
             component.CollidingWith.Clear();

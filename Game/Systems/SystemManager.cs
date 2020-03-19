@@ -20,30 +20,46 @@ namespace PIGMServer.Game.Systems
 
     public static class SystemManager
     {
-        [ThreadStatic]  // One instance per thread.
-        private static readonly Dictionary<SystemTypes, IGameSystem> Systems =
-            new Dictionary<SystemTypes, IGameSystem>();
+        //[ThreadStatic]  // One instance per thread.
+        private static readonly Dictionary<string, Dictionary<SystemTypes, IGameSystem>> Systems =
+            new Dictionary<string, Dictionary<SystemTypes, IGameSystem>>();
 
-        public static void Add(IGameSystem system)
+        private static readonly Dictionary<string, string> componentWorlds = new Dictionary<string, string>(8000);
+
+        private static readonly Dictionary<Type, SystemTypes> TypeLookUp =
+            new Dictionary<Type, SystemTypes>()
+            {
+                { typeof(BallSystem),       SystemTypes.Ball },
+                { typeof(BrickSystem),      SystemTypes.Brick },
+                { typeof(ColliderSystem),   SystemTypes.Collide },
+                { typeof(MoveableSystem),   SystemTypes.Movable },
+                { typeof(PlayerSystem),     SystemTypes.Player },
+                { typeof(PowerUpSystem),    SystemTypes.PowerUp }
+            };
+
+        public static void Add(string worldName, IGameSystem system)
         {
-            Type systemType = system.GetType();
             SystemTypes type = system.GetSystemType();
 
-            if (Systems.ContainsKey(type))
+            if(!Systems.ContainsKey(worldName))
             {
-                Systems[type].Clear();
+                Systems.Add(worldName, new Dictionary<SystemTypes, IGameSystem>());
             }
-            else
-            {
-                Systems.Add(type, system);
-            }
+
+            Systems[worldName].Add(type, system);
         }
 
-        public static IGameComponent Get(SystemTypes systemType, string component)
+        public static IGameComponent Get<T>(string component)
         {
-            GameSystem<IGameComponent> system =
-                (GameSystem<IGameComponent>) Systems[systemType];
+            string worldName = componentWorlds[component];
+            dynamic system   = Systems[worldName][TypeLookUp[typeof(T)]];
             return system.Get(component);
+        }
+
+        public static T GetSystem<T>(string worldName) where T : IGameSystem
+        {
+            SystemTypes systemType = TypeLookUp[typeof(T)];
+            return (T) Systems[worldName][systemType];
         }
 
         public static Type GetSystemClassFromType(SystemTypes systemType)
@@ -66,9 +82,9 @@ namespace PIGMServer.Game.Systems
                     throw new Exception("Invalid System Type provided.");
             }
         }
-        
-        public static void Clear(SystemTypes type)
-            => Systems[type].Clear();
-        public static void Remove(SystemTypes type, string name) => Systems[type].Remove(name);
+
+        public static void MapComponentWorld(string world, string component) => componentWorlds.Add(component, world);
+
+        public static void Remove(SystemTypes type, string name) => Systems[componentWorlds[name]][type].Remove(name);
     }
 }

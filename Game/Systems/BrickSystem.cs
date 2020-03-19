@@ -9,9 +9,12 @@ namespace PIGMServer.Game.Systems
 {
     public class BrickSystem : GameSystem<Brick>
     {
+        public BrickSystem(string worldName) : base(worldName)
+        { }
+
         protected override void Process(Brick brick, float deltaTime)
         {
-            Collider collider = brick.Parent.Find<Collider>(SystemTypes.Collide);
+            /*Collider collider = brick.Parent.Find<ColliderSystem>(SystemTypes.Collide);
 
             if(HitBall(collider))
             {
@@ -19,7 +22,7 @@ namespace PIGMServer.Game.Systems
 
                 if (brick.Health == 0)
                     Destroy(brick);
-            }
+            }*/
         }
 
         private bool HitBall(Collider collider)
