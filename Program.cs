@@ -1,5 +1,6 @@
 ﻿using PIGMServer.Game;
 using PIGMServer.Game.Worlds;
+using PIGMServer.Game.Worlds.Levels;
 using PIGMServer.Network;
 using System;
 using System.Collections.Generic;
@@ -30,8 +31,19 @@ namespace PIGMServer
             managerThread.Start();
 
 
-            OverWorld testWorld = new OverWorld();
-            ClientAcceptor.QueueOwner(testWorld);
+            Thread worldThread = new Thread(() =>
+            {
+                OverWorld testWorld = new BreakoutOverworld();
+                ClientAcceptor.QueueOwner(testWorld);
+
+                while(true)
+                {
+                    testWorld.Update();
+                }
+            });
+            worldThread.Start();
+
+
         }
     }
 }
