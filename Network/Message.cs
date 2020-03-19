@@ -87,7 +87,7 @@ namespace PIGMServer.Network
 
         public byte[] GetData()
         {
-            return Data.Skip(1).ToArray();
+            return Data.Skip(3).ToArray();
         }
     }
 }
