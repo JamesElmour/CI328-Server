@@ -11,6 +11,7 @@ namespace PIGMServer.Game.Worlds.Levels
     {
         protected override void SetupSystems()
         {
+            SystemManager.Add(new PlayerSystem());
             SystemManager.Add(new MoveableSystem());
             SystemManager.Add(new ColliderSystem());
             SystemManager.Add(new BallSystem());

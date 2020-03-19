@@ -8,3 +8,6 @@
 .vs/PIGMServer/v16/Server/sqlite3/storage.ide
 obj/
 .vs/PIGMServer/v16/
+packages/
+packages.config
+bin/

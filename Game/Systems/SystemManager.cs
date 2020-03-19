@@ -14,7 +14,7 @@ namespace PIGMServer.Game.Systems
         Collide,
         Movable,
         Player,
-        Powerup,
+        PowerUp,
         Unknown
     }
 
@@ -59,10 +59,9 @@ namespace PIGMServer.Game.Systems
                 case SystemTypes.Movable:
                     return typeof(MoveableSystem);
                 case SystemTypes.Player:
-                    // TODO: Replace
-                    throw new Exception("Player System not implemented.");
-                case SystemTypes.Powerup:
-                    throw new Exception("Powerup System not implemented.");
+                    return typeof(PlayerSystem);
+                case SystemTypes.PowerUp:
+                    return typeof(PowerUpSystem);
                 default:
                     throw new Exception("Invalid System Type provided.");
             }

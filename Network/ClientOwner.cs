@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PIGMServer.Network
 {
-    abstract class ClientOwner
+    public abstract class ClientOwner
     {
-        protected int AcceptLimit = 2;
+        protected int AcceptLimit = 4;
         protected int AcceptedClients = 0;
 
         public abstract void Give(Client client);

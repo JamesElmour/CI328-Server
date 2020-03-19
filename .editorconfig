@@ -2,3 +2,9 @@
 
 # IDE0005: Using directive is unnecessary.
 dotnet_diagnostic.IDE0005.severity = suggestion
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = silent
+
+# CA1062: Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity = none

@@ -73,7 +73,7 @@ namespace PIGMServer.Network
         // Stolen from Mozilla ;)
         private static void CheckClient(Client appClient)
         {
-            TcpClient client = appClient.client;
+            TcpClient client = appClient.tcpClient;
             NetworkStream stream = appClient.Stream;
 
             if (!stream.DataAvailable && client.Available < 3)

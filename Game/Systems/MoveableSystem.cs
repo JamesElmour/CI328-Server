@@ -13,7 +13,7 @@ namespace PIGMServer.Game.Systems
         protected override void Process(Movable component, float deltaTime)
         {
             Vector2 position = component.Parent.Position;
-            Vector2 velocity = component.Velocity;
+            Vector2 velocity = component.Direction;
 
             component.Parent.Position = position + (position * (velocity * deltaTime));
         }

@@ -10,30 +10,29 @@ namespace PIGMServer.Network
     {
         public enum Opcode
         {
-            PlacePiece,
-            Won,
-            Lost,
-            Connected,
-            Waiting,
-            Draw,
-            Rematch,
             Unknown,
-            GameReady
+            Connected,
+            PlayerMove,
+            PlayerUsePowerUp,
+            PlayerReady
         }
 
-        private readonly Opcode op;
+        private readonly int SuperOp;
+        private readonly int SubOp;
         private byte[] Data;
 
-        public Message(Opcode op, byte[] data = null)
+        public Message(int superOp, int subOp, byte[] data = null)
         {
-            this.op = op;
-            Data = data;
+            this.SuperOp = superOp;
+            this.SubOp   = subOp;
+            Data         = data;
         }
 
         public Message(byte[] data)
         {
-            op = GetOptcode(data[0]);
-            Data = data.Skip(1).ToArray();
+            SuperOp = data[1];
+            SubOp   = data[2];
+            Data    = data.Skip(1).ToArray();
         }
 
         public byte[] Encode()
@@ -41,11 +40,9 @@ namespace PIGMServer.Network
             byte rfcOp = 0b10000001;
             byte gameOp = 0;
 
-            gameOp = (byte) op;
-
             if (Data == null)
             {
-                Data = new byte[] { };
+                Data = Array.Empty<byte>();
             }
 
             byte length = (byte)(1 + Data.Length);
@@ -59,12 +56,17 @@ namespace PIGMServer.Network
             return newData;
         }
 
-
-        public Opcode GetOptcode()
+        public int GetSuperOp()
         {
-            return op;
+            return SuperOp;
         }
-        public Opcode GetOptcode(byte opByte)
+
+        public int GetSubOp()
+        {
+            return SubOp;
+        }
+
+        public static Opcode GetOptcode(byte opByte)
         {
 
             switch (opByte)
@@ -72,19 +74,12 @@ namespace PIGMServer.Network
                 case 1:
                     return Opcode.Connected;
                 case 2:
-                    return Opcode.Waiting;
+                    return Opcode.PlayerMove;
                 case 3:
-                    return Opcode.PlacePiece;
+                    return Opcode.PlayerUsePowerUp;
                 case 4:
-                    return Opcode.Won;
-                case 5:
-                    return Opcode.Lost;
-                case 6:
-                    return Opcode.Draw;
-                case 7:
-                    return Opcode.Rematch;
-                case 8:
-                    return Opcode.Rematch;
+                    return Opcode.PlayerReady;
+
                 default:
                     return Opcode.Unknown;
             }

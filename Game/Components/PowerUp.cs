@@ -16,7 +16,7 @@ namespace PIGMServer.Game.Components
             WidePlayer,
             NarrowPlayer
         }
-        public Types Type;
+        public readonly Types Type;
 
         public PowerUp(GameEntity parent, Types type) : base(parent)
         {

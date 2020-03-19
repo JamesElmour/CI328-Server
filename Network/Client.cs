@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace PIGMServer.Network
 {
-    class Client
+    public class Client
     {
-        public TcpClient client { get; private set; }
+        public TcpClient tcpClient { get; private set; }
         public NetworkStream Stream { get; private set; }
         public ClientOwner Owner { get; private set; }
 
         public Client(TcpClient newClient)
         {
-            client = newClient;
-            Stream = client.GetStream();
+            tcpClient = newClient;
+            Stream = tcpClient.GetStream();
 
         }
 

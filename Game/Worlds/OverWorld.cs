@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace PIGMServer.Game.Worlds
 {
-    public class OverWorld
+    public class OverWorld : GameClientHandler
     {
+        public enum WorldStates
+        {
+            Initialising,
+            Loading,
+            Ready,
+            Playing
+        }
+
         private List<SubWorld> SubWorlds = new List<SubWorld>();
         private List<WorldSlice> Slices = new List<WorldSlice>();
         private readonly int Tps;
@@ -20,6 +28,8 @@ namespace PIGMServer.Game.Worlds
         {
             Tps = tps;
             DeltaTime = 1 / tps;
+
+
         }
 
         public void Start()
@@ -28,6 +38,7 @@ namespace PIGMServer.Game.Worlds
             GenerateWorldSlices();
         }
 
+        #region World Slices and Updating
         /// <summary>
         /// Calculate the number of slices required.
         /// </summary>
@@ -84,5 +95,6 @@ namespace PIGMServer.Game.Worlds
                 SliceUpdate = 0;
             }
         }
+        #endregion
     }
 }
