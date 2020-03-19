@@ -4,11 +4,12 @@ namespace PIGMServer.Game.Components
 {
     public class Player : GameComponent
     {
-        public Vector2 Dimensions;
+        public short Direction = 1;
+        public short Speed = 200;
 
         public Player(GameEntity parent) : base(parent)
         {
-
+            
         }
     }
 }
