@@ -25,7 +25,6 @@ namespace PIGMServer.Game
         public override void HandleMessage(Client client, Message message)
         {
             Console.WriteLine("Recieving message:");
-            Console.WriteLine(message.GetData().ToString());
             
             switch(message.GetSuperOp())
             {
@@ -50,11 +49,11 @@ namespace PIGMServer.Game
         private void PlayerDirectionChange(Client client, Message message)
         {
             byte[] data = message.GetData();
-            string name = "Player_" + Clients.IndexOf(client) + "_Movable";
+            string name = "Player";
             short direction = data[0];
 
-            Movable player = (Movable)SystemManager.Get(SystemTypes.Movable, name);
-            player.Direction.x = direction;
+            Player player = (Player) SystemManager.Get<PlayerSystem>(name);
+            player.Direction = direction;
         }
 
         private void PlayerUsePowerUp(Message message)
@@ -66,7 +65,6 @@ namespace PIGMServer.Game
         {
 
         }
-
         #endregion
 
     }
