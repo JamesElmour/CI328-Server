@@ -30,7 +30,7 @@ namespace PIGMServer.Game.Systems
             short superOp = (short) SuperOps.Player;
             short subOp   = (short) PlayerOps.PositionUpdate;
 
-            return new Message(superOp, subOp, new byte[newPosition]);
+            return new Message(superOp, subOp, new byte[] { (byte) newPosition });
         }
 
         public override SystemTypes GetSystemType()

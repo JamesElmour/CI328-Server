@@ -81,8 +81,9 @@ namespace PIGMServer.Network
                 return;
             }
 
-            byte[] bytes = new byte[client.Available];
-            stream.Read(bytes, 0, client.Available);
+            int available = client.Available;
+            byte[] bytes = new byte[available];
+            stream.Read(bytes, 0, available);
             string s = Encoding.UTF8.GetString(bytes);
 
             if (Regex.IsMatch(s, "^GET", RegexOptions.IgnoreCase))

@@ -49,20 +49,19 @@ namespace PIGMServer.Network
         public byte[] Encode()
         {
             byte rfcOp = 0b10000001;
-            byte gameOp = 0;
 
             if (Data == null)
             {
                 Data = Array.Empty<byte>();
             }
 
-            byte length = (byte)(1 + Data.Length);
+            byte length = (byte)(2 + Data.Length);
 
-            byte[] encoded = { rfcOp, length, gameOp };
-            byte[] newData = new byte[3 + Data.Length];
+            byte[] encoded = { rfcOp, length, (byte) SuperOp, (byte) SubOp };
+            byte[] newData = new byte[4 + Data.Length];
 
             Array.Copy(encoded, newData, encoded.Length);
-            Array.Copy(Data, 0, newData, 3, Data.Length);
+            Array.Copy(Data, 0, newData, 4, Data.Length);
 
             return newData;
         }
