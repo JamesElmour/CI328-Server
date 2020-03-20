@@ -1,4 +1,5 @@
 ﻿using PIGMServer.Game.Systems;
+using PIGMServer.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace PIGMServer.Game.Worlds
     public abstract class SubWorld : World
     {
         private Dictionary<string, IGameSystem> systems = new Dictionary<string, IGameSystem>();
-        private int WorldIndex;
+        private MessageQueue Queue = new MessageQueue();
+        public int WorldIndex { get; private set; }
 
         public SubWorld(int index)
         {
@@ -33,21 +35,25 @@ namespace PIGMServer.Game.Worlds
         /// Update the SubWorld.
         /// </summary>
         /// <param name="deltaTime">Deltatime passed by the OverWorld.</param>
-        public void Update(float deltaTime)
+        public MessageQueue Update(float deltaTime)
         {
-            UpdateSystems(deltaTime);
+            return UpdateSystems(deltaTime);
         }
 
         /// <summary>
         /// Update the SubWorld's systems, in the defined order with the given deltatime.
         /// </summary>
         /// <param name="deltaTime">Deltatime passed by the OverWorld.</param>
-        private void UpdateSystems(float deltaTime)
+        private MessageQueue UpdateSystems(float deltaTime)
         {
+            Queue.Clear();
+
             foreach(IGameSystem system in systems.Values)
             {
-                system.Update(deltaTime);
+                Queue.Add(system.Update(deltaTime));
             }
+
+            return Queue;
         }
 
         /// <summary>

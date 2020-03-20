@@ -6,6 +6,17 @@ using System.Threading.Tasks;
 
 namespace PIGMServer.Network
 {
+    public enum SuperOps
+    {
+        Player
+    }
+
+    public enum PlayerOps
+    {
+        DirectionChange,
+        PositionUpdate
+    }
+    
     public class Message
     {
         public enum Opcode

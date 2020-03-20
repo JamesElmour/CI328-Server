@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PIGMServer.Game.Systems;
+using PIGMServer.Network;
 
 namespace PIGMServer.Game
 {
@@ -20,10 +21,10 @@ namespace PIGMServer.Game
             WorldName = worldName;
         }
 
-        public void Update(float deltaTime)
+        public List<Message> Update(float deltaTime)
         {
             PreprocessComponents();
-            UpdateComponents(deltaTime);
+            return UpdateComponents(deltaTime);
         }
         
         private void PreprocessComponents()
@@ -41,13 +42,15 @@ namespace PIGMServer.Game
        /// Cycle through available currently available components, calling their update methods.
        /// </summary>
        /// <param name="deltaTime">DeltaTime passed from parent GameOverWorld.</param>
-        private void UpdateComponents(float deltaTime)
+        private List<Message> UpdateComponents(float deltaTime)
         {
             AlteredComponents.Clear();
 
             // Get current components, more may be generated during the updating cycle. Causing an error.
             TemporaryComponents.Clear();
             TemporaryComponents.AddRange(Components.Values);
+
+            List<Message> messageQueue = new List<Message>();
 
             foreach (T component in TemporaryComponents)
             {
@@ -57,7 +60,18 @@ namespace PIGMServer.Game
                     AlteredComponents.Add(component);
 
             }
+
+            foreach (T altered in AlteredComponents)
+            {
+                messageQueue.Add(GatherAlterations(altered));
+            }
+
+            return messageQueue;
         }
+
+        protected abstract Message GatherAlterations(T alteredComponent);
+
+        protected abstract void Process(T component, float deltaTime);
 
         public void Clear()
         {
@@ -65,8 +79,6 @@ namespace PIGMServer.Game
             TemporaryComponents.Clear();
             AlteredComponents.Clear();
         }
-
-        protected abstract void Process(T component, float deltaTime);
 
         public T Get(string name)
         {

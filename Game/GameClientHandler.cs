@@ -9,7 +9,9 @@ namespace PIGMServer.Game
 {
     public class GameClientHandler : ClientOwner
     {
-        private readonly List<Client> Clients;
+
+        //[ThreadStatic]
+        private List<Client> Clients;
 
 
         public GameClientHandler()
@@ -32,6 +34,11 @@ namespace PIGMServer.Game
                     ProcessPlayerMesssage(client, message);
                     break;
             }
+        }
+
+        public Client Get(int index)
+        {
+            return Clients[index];
         }
 
         #region Player Messages

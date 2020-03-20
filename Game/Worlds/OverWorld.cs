@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PIGMServer.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,12 +18,12 @@ namespace PIGMServer.Game.Worlds
         }
 
         private List<SubWorld> SubWorlds = new List<SubWorld>();
-        private List<WorldSlice> Slices = new List<WorldSlice>();
+        //private List<WorldSlice> Slices = new List<WorldSlice>();
         private readonly int Tps;
         private readonly float DeltaTime;
         private readonly int SubworldsPerFrame = 1;
         private int SliceCount;
-        private int SliceUpdate = 0;
+        private int SubworldIndex = 0;
         private float TimeTillUpdate = 0;
         private DateTime PreviousDateTime;
 
@@ -39,8 +40,8 @@ namespace PIGMServer.Game.Worlds
         public void Start()
         {
             CreateSubWorlds();
-            CalculateSliceCount();
-            GenerateWorldSlices();
+            //CalculateSliceCount();
+            //GenerateWorldSlices();
         }
 
         /// <summary>
@@ -67,13 +68,13 @@ namespace PIGMServer.Game.Worlds
         /// <summary>
         /// Generate the slices fo rthe OverWorld, assigning SubWorlds to them for updating.
         /// </summary>
-        private void GenerateWorldSlices()
+        /*private void GenerateWorldSlices()
         {            
             for(int i = 0; i < SliceCount; i++)
             {
                 Slices.Add(CreateSlice(i));
             }
-        }
+        }*/
 
         /// <summary>
         /// Create and assign a Slice for the required index.
@@ -97,7 +98,7 @@ namespace PIGMServer.Game.Worlds
         public void Update()
         {
             if(ShouldUpdate())
-                UpdateSlice();
+                UpdateWorld();
         }
 
         private bool ShouldUpdate()
@@ -120,15 +121,17 @@ namespace PIGMServer.Game.Worlds
         /// <summary>
         /// Update the next slice.
         /// </summary>
-        private void UpdateSlice()
+        private void UpdateWorld()
         {
-            Slices[SliceUpdate].Update(DeltaTime);
-            
-            SliceUpdate++;
-            if(SliceUpdate == SliceCount)
+            SubworldIndex++;
+            if(SubworldIndex == SubWorlds.Count)
             {
-                SliceUpdate = 0;
+                SubworldIndex = 0;
             }
+
+            SubWorld sub = SubWorlds[SubworldIndex];
+            Client client = Get(sub.WorldIndex);
+            SendQueue(client, sub.Update(DeltaTime));
         }
         #endregion
     }

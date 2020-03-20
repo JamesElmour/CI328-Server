@@ -1,5 +1,6 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Game.Types;
+using PIGMServer.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,12 @@ namespace PIGMServer.Game.Systems
 
             component.Parent.Position = position + (position * (velocity * deltaTime));
         }
+
+        protected override Message GatherAlterations(Movable alteredComponent)
+        {
+            return new Message(1, 1);
+        }
+
         public override SystemTypes GetSystemType()
         {
             return SystemTypes.Movable;

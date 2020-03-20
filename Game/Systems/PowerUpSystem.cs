@@ -1,4 +1,5 @@
 ﻿using PIGMServer.Game.Components;
+using PIGMServer.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,12 @@ namespace PIGMServer.Game.Systems
         {
 
         }
+
+        protected override Message GatherAlterations(PowerUp alteredComponent)
+        {
+            return new Message(1, 1);
+        }
+
 
         public override SystemTypes GetSystemType()
         {

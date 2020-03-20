@@ -111,6 +111,7 @@
     <Compile Include="Network\ClientAcceptor.cs" />
     <Compile Include="Network\ClientOwner.cs" />
     <Compile Include="Network\Message.cs" />
+    <Compile Include="Network\MessageQueue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

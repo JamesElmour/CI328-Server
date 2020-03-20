@@ -1,4 +1,5 @@
 ﻿using PIGMServer.Game.Components;
+using PIGMServer.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,16 @@ namespace PIGMServer.Game.Systems
             short velocity  = (short) (direction * speed * deltaTime);
 
             parent.Position.x += velocity;
+            component.Altered = true;
+        }
+
+        protected override Message GatherAlterations(Player alteredComponent)
+        {
+            short newPosition = alteredComponent.Parent.Position.x;
+            short superOp = (short) SuperOps.Player;
+            short subOp   = (short) PlayerOps.PositionUpdate;
+
+            return new Message(superOp, subOp, new byte[newPosition]);
         }
 
         public override SystemTypes GetSystemType()

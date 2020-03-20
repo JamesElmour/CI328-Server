@@ -17,5 +17,15 @@ namespace PIGMServer.Network
         {
             return (AcceptedClients <= AcceptLimit);
         }
+
+        public void SendQueue(Client client, MessageQueue queue)
+        {
+            List<Message> messages = queue.Get();
+
+            foreach(Message message in messages)
+            {
+                ClientAcceptor.SendMessage(client, message);
+            }
+        }
     }
 }
