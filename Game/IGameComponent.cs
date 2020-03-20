@@ -10,6 +10,5 @@ namespace PIGMServer.Game
     {
         GameEntity GetParent { get; }
         bool IsAltered();
-        List<KeyValuePair<string, byte[]>> GetAlterations();
     }
 }

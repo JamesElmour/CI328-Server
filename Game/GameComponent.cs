@@ -13,7 +13,6 @@ namespace PIGMServer.Game
         public      bool        Altered =   false;
         public      GameEntity  Parent;
         public      SystemTypes System  = SystemTypes.Unknown;
-        protected   List<KeyValuePair<string, byte[]>> Alterations = new List<KeyValuePair<string, byte[]>>();
 
         public GameComponent(GameEntity parent)
         {
@@ -25,18 +24,8 @@ namespace PIGMServer.Game
             Guid id = Guid.NewGuid();
             Name = id.ToString();
         }
-
-        public virtual void ClearAlterations()
-        {
-            if (Altered)
-            {
-                Alterations.Clear();
-                Altered = false;
-            }
-        }
          
         public bool IsAltered() => Altered;
-        public List<KeyValuePair<string, byte[]>> GetAlterations() => Alterations;
         public GameEntity GetParent => Parent;
     }
 }
