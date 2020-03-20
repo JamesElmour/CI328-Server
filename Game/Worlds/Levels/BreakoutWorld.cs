@@ -10,6 +10,10 @@ namespace PIGMServer.Game.Worlds.Levels
 {
     public class BreakoutWorld : SubWorld
     {
+        public BreakoutWorld(int index) : base(index)
+        {
+
+        }
 
         protected override void SetupSystems()
         {

@@ -10,9 +10,11 @@ namespace PIGMServer.Game.Worlds
     public abstract class SubWorld : World
     {
         private Dictionary<string, IGameSystem> systems = new Dictionary<string, IGameSystem>();
+        private int WorldIndex;
 
-        public SubWorld()
+        public SubWorld(int index)
         {
+            WorldIndex = index;
             SetupSystems();
             SetupComponents();
         }

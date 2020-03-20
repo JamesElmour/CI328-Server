@@ -17,7 +17,7 @@ namespace PIGMServer.Game.Systems
             GameEntity parent = component.Parent;
             short speed = component.Speed;
             short direction = (short) (component.Direction - 1);
-            short velocity  = (short) (direction * speed);
+            short velocity  = (short) (direction * speed * deltaTime);
 
             parent.Position.x += velocity;
         }

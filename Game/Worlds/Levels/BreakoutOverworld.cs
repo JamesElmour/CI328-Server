@@ -10,7 +10,7 @@ namespace PIGMServer.Game.Worlds.Levels
     {
         protected override void CreateSubWorlds()
         {
-            AddSubWorld(new BreakoutWorld());
+            AddSubWorld(new BreakoutWorld(0));
         }
     }
 }

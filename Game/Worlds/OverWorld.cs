@@ -20,14 +20,18 @@ namespace PIGMServer.Game.Worlds
         private List<WorldSlice> Slices = new List<WorldSlice>();
         private readonly int Tps;
         private readonly float DeltaTime;
-        private readonly int SubworldsPerFrame = 2;
+        private readonly int SubworldsPerFrame = 1;
         private int SliceCount;
         private int SliceUpdate = 0;
+        private float TimeTillUpdate = 0;
+        private DateTime PreviousDateTime;
 
         public OverWorld(int tps = 20)
         {
             Tps = tps;
-            DeltaTime = 1 / tps;
+            DeltaTime = 1.0f / tps;
+            TimeTillUpdate = 1.0f / (float) Tps;
+            PreviousDateTime = DateTime.Now;
 
             Start();
         }
@@ -92,7 +96,25 @@ namespace PIGMServer.Game.Worlds
         /// </summary>
         public void Update()
         {
-            UpdateSlice();
+            if(ShouldUpdate())
+                UpdateSlice();
+        }
+
+        private bool ShouldUpdate()
+        {
+            DateTime currentDateTime = DateTime.Now;
+            float previousMS = PreviousDateTime.Millisecond;
+            float currentMS  = currentDateTime.Millisecond;
+            float difference = (currentMS - previousMS) / 1000;
+            TimeTillUpdate -= difference;
+
+            if (TimeTillUpdate <= 0)
+            {
+                TimeTillUpdate = 1.0f / (float) Tps;
+                return true;
+            }
+
+            return false;
         }
         
         /// <summary>
