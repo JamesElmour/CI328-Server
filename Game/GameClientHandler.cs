@@ -10,7 +10,6 @@ namespace PIGMServer.Game
     public class GameClientHandler : ClientOwner
     {
 
-        //[ThreadStatic]
         private List<Client> Clients;
 
 
@@ -21,7 +20,8 @@ namespace PIGMServer.Game
 
         public override void Give(Client client)
         {
-            Clients.Add(client); 
+            Clients.Add(client);
+            AcceptedClients++;
         }
 
         public override void HandleMessage(Client client, Message message)

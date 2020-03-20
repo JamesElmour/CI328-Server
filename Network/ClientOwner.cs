@@ -8,8 +8,9 @@ namespace PIGMServer.Network
 {
     public abstract class ClientOwner
     {
-        protected int AcceptLimit = 4;
+        protected int AcceptLimit = 1;
         protected int AcceptedClients = 0;
+        public bool IsFull { get { return (AcceptLimit == AcceptedClients); } }
 
         public abstract void Give(Client client);
         public abstract void HandleMessage(Client client, Message message);

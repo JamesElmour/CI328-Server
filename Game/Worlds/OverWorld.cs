@@ -97,7 +97,7 @@ namespace PIGMServer.Game.Worlds
         /// </summary>
         public void Update()
         {
-            if(ShouldUpdate())
+            if(IsFull && ShouldUpdate())
                 UpdateWorld();
         }
 
