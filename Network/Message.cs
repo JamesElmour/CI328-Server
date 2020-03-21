@@ -48,7 +48,7 @@ namespace PIGMServer.Network
 
         public byte[] Encode()
         {
-            byte rfcOp = 0b10000001;
+            byte rfcOp = 0b10000010;
 
             if (Data == null)
             {
