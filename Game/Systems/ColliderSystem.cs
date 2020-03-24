@@ -17,6 +17,7 @@ namespace PIGMServer.Game.Systems
         protected override void Preprocess(Collider component)
         {
             component.CollidingWith.Clear();
+            component.CollidedComponents.Clear();
             component.Colliding = false;
         }
 
@@ -38,8 +39,11 @@ namespace PIGMServer.Game.Systems
             string tag = other.Parent.Tag;
             component.Colliding = true;
 
-            if(!component.CollidingWith.Contains(tag))
+            if (!component.CollidingWith.Contains(tag))
+            {
                 component.CollidingWith.Add(tag);
+                component.CollidedComponents.Add(other);
+            }
         }
 
         private bool Collides(Collider a, Collider b)

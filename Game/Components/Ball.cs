@@ -1,4 +1,5 @@
 ﻿using PIGMServer.Game.Systems;
+using PIGMServer.Game.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,9 @@ namespace PIGMServer.Game.Components
 {
     public class Ball : GameComponent
     {
+        public Vector2 Direction;
+        public float Speed = 600;
+
         public Ball(GameEntity parent) : base(parent)
         {
 

@@ -35,6 +35,12 @@ namespace PIGMServer.Game
         }
 
         public string Get(SystemTypes type) => Components[type];
+
+        public T Get<T>(SystemTypes type)
+        {
+            return (T) SystemManager.Get<T>(Get(type));
+        }
+
         public T Find<T>(SystemTypes type) where T : IGameSystem
         {
             string component = Get(type);

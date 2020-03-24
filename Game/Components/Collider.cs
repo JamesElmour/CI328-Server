@@ -13,6 +13,7 @@ namespace PIGMServer.Game.Components
         public bool Active;
         public bool Colliding;
         public List<string> CollidingWith = new List<string>(5);
+        public List<IGameComponent> CollidedComponents = new List<IGameComponent>(5);
 
         public Collider(GameEntity parent, short width, short height, bool active = false) : base(parent)
         {

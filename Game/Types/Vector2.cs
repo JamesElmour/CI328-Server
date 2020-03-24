@@ -22,6 +22,15 @@ namespace PIGMServer.Game.Types
             this.y = y;
         }
 
+        public Vector2 Normalize()
+        {
+            short magnitude = (short) (this.x + this.y);
+            short x = (short) (this.x / magnitude);
+            short y = (short) (this.y / magnitude);
+
+            return new Vector2(x, y);
+        }
+
         public byte[] ToByteArray()
         {
             byte[] VectorBytes = new byte[4];

@@ -15,15 +15,17 @@ namespace PIGMServer.Game.Systems
 
         protected override void Process(Brick brick, float deltaTime)
         {
-            /*Collider collider = brick.Parent.Find<ColliderSystem>(SystemTypes.Collide);
-
+            Collider collider = brick.Parent.Get<Collider>(SystemTypes.Collide);
             if(HitBall(collider))
             {
-                brick.Health--;
+                Hit(brick);
+            }
+        }
 
-                if (brick.Health == 0)
-                    Destroy(brick);
-            }*/
+        void Hit(Brick brick)
+        {
+            brick.Health--;
+            brick.Parent.Destroy();
         }
 
         protected override Message GatherAlterations(Brick alteredComponent)
