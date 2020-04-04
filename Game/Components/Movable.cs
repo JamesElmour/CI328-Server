@@ -1,4 +1,5 @@
 ﻿using PIGMServer.Game.Attributes;
+using PIGMServer.Game.Systems;
 using PIGMServer.Game.Types;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,11 @@ namespace PIGMServer.Game.Components
         public Movable(GameEntity parent, Vector2 direction) : base(parent)
         {
             Direction = direction;
+        }
+
+        public override SystemTypes GetSystem()
+        {
+            return SystemTypes.Ball;
         }
     }
 }

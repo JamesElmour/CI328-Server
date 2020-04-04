@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PIGMServer.Game.Systems;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,11 @@ namespace PIGMServer.Game.Components
         public int TypeValue()
         {
             return (int) Type;
+        }
+
+        public override SystemTypes GetSystem()
+        {
+            return SystemTypes.Ball;
         }
     }
 }

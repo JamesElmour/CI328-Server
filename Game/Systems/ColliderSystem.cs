@@ -38,21 +38,31 @@ namespace PIGMServer.Game.Systems
         {
             string tag = other.Parent.Tag;
             component.Colliding = true;
+            other.Colliding = true;
+
+            if(tag.Equals("Brick"))
+            {
+                int a = 2;
+            }
 
             if (!component.CollidingWith.Contains(tag))
             {
                 component.CollidingWith.Add(tag);
                 component.CollidedComponents.Add(other);
+
+                other.CollidingWith.Add(component.Parent.Tag);
+                other.CollidedComponents.Add(component);
             }
         }
 
         private bool Collides(Collider a, Collider b)
         {
-            return Rectangle.Intersects(a.Rect, b.Rect);
+
+            return a != b && Rectangle.Intersects(a.Rect, b.Rect);
         }
         public override SystemTypes GetSystemType()
         {
-            return SystemTypes.Collide;
+            return SystemTypes.Collider;
         }
 
         protected override Message GatherAlterations(Collider alteredComponent)

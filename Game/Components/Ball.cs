@@ -15,7 +15,11 @@ namespace PIGMServer.Game.Components
 
         public Ball(GameEntity parent) : base(parent)
         {
+        }
 
+        public override SystemTypes GetSystem()
+        {
+            return SystemTypes.Ball;
         }
     }
 }

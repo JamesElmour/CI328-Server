@@ -10,7 +10,8 @@ namespace PIGMServer.Game.Worlds
 {
     public abstract class SubWorld : World
     {
-        private Dictionary<string, IGameSystem> systems = new Dictionary<string, IGameSystem>();
+        protected Dictionary<string, IGameSystem> Systems = new Dictionary<string, IGameSystem>();
+        protected Dictionary<string, GameEntity> Entities = new Dictionary<string, GameEntity>();
         private MessageQueue Queue = new MessageQueue();
         public int WorldIndex { get; private set; }
 
@@ -35,25 +36,21 @@ namespace PIGMServer.Game.Worlds
         /// Update the SubWorld.
         /// </summary>
         /// <param name="deltaTime">Deltatime passed by the OverWorld.</param>
-        public MessageQueue Update(float deltaTime)
+        public void Update(float deltaTime)
         {
-            return UpdateSystems(deltaTime);
+            UpdateSystems(deltaTime);
         }
 
         /// <summary>
         /// Update the SubWorld's systems, in the defined order with the given deltatime.
         /// </summary>
         /// <param name="deltaTime">Deltatime passed by the OverWorld.</param>
-        private MessageQueue UpdateSystems(float deltaTime)
+        private void UpdateSystems(float deltaTime)
         {
-            Queue.Clear();
-
-            foreach(IGameSystem system in systems.Values)
+            foreach(IGameSystem system in Systems.Values)
             {
-                Queue.Add(system.Update(deltaTime));
+                system.Update(deltaTime);
             }
-
-            return Queue;
         }
 
         /// <summary>
@@ -63,9 +60,35 @@ namespace PIGMServer.Game.Worlds
         protected void AddSystem(IGameSystem system)
         {
             string name = system.GetSystemType().ToString();
-            systems.Add(name, system);
+            Systems.Add(name, system);
 
             SystemManager.Add(Name, system);
+        }
+
+        public T GetSystem<T>() where T : IGameSystem
+        {
+            string name = typeof(T).Name;
+            return (T) Systems[name];
+        }
+
+        public List<Message> GatherAlterations(int priority)
+        {
+            List<Message> messages = new List<Message>();
+            
+            foreach (IGameSystem system in Systems.Values)
+            {
+                if(system.GetPriority() >= priority)
+                {
+                    messages.AddRange(system.GetAlterations());
+                }
+            }
+
+            return messages;
+        }
+
+        public GameEntity GetEntity(string name)
+        {
+            return Entities[name];
         }
     }
 }

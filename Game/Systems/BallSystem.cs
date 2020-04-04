@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PIGMServer.Game.Components;
 using PIGMServer.Game.Types;
 using PIGMServer.Network;
+using PIGMServer.Utilities;
 
 namespace PIGMServer.Game.Systems
 {
@@ -18,20 +19,23 @@ namespace PIGMServer.Game.Systems
 
         protected override void Process(Ball component, float deltaTime)
         {
-            Collider collider = component.Parent.Get<Collider>(SystemTypes.Collide);
+            Collider collider = component.Parent.Get<Collider>(SystemTypes.Collider);
 
             PlayerBounce(component, collider);
             WallBounce(component);
             BrickBounce(component, collider);
             Move(component, deltaTime);
+            component.Altered = true;
         }
 
         private void Move(Ball ball, float deltaTime)
         {
             Vector2 position = ball.Parent.Position;
             Vector2 velocity = new Vector2(0);
-            velocity.x = (short) (ball.Direction.x * ball.Speed * deltaTime);
-            velocity.y = (short) (ball.Direction.y * ball.Speed * deltaTime);
+            float dirX = (ball.Direction.x - 100.0f) / 100.0f;
+            float dirY = (ball.Direction.y - 100.0f) / 100.0f;
+            velocity.x = (short) (dirX * ball.Speed * deltaTime);
+            velocity.y = (short) (dirY * ball.Speed * deltaTime);
 
             position.x += velocity.x;
             position.y += velocity.y;
@@ -45,16 +49,18 @@ namespace PIGMServer.Game.Systems
 
             if(foundIndex != -1)
             {
-                Brick brick = (Brick) collider.CollidedComponents[foundIndex];
+                Collider brick = (Collider) collider.CollidedComponents[foundIndex];
                 Vector2 ballPos = ball.Parent.Position;
                 Vector2 brickPos = brick.Parent.Position;
-                Vector2 collisionVector = new Vector2((short)(ballPos.x - (brickPos.x + 32)), (short) (ballPos.y - brickPos.y)).Normalize();
+                KeyValuePair<float, float> collisionVector = new Vector2((short)(ballPos.x - (brickPos.x + 32)), (short) (ballPos.y - brickPos.y)).Normalize();
+                float colVx = collisionVector.Key;
+                float colVy = collisionVector.Value;
 
-                if(Math.Abs(collisionVector.x) > 0.7)
+                if (Math.Abs(colVx) > 0.7)
                 {
-                    ball.Direction.x = (short) -ball.Direction.x;
+                    ball.Direction.x = (short) ((- (ball.Direction.x - 100)) + 100);
 
-                    if(collisionVector.x < 0)
+                    if(colVx < 0)
                     {
                         ballPos.x = brickPos.x;
                     }
@@ -65,9 +71,9 @@ namespace PIGMServer.Game.Systems
                 }
                 else
                 {
-                    ball.Direction.y = (short) -ball.Direction.y;
+                    ball.Direction.y = (short) ((-(ball.Direction.y - 100)) + 100);
 
-                    if (collisionVector.y < 0)
+                    if (colVy < 0)
                     {
                         ballPos.y = brickPos.y;
                     }
@@ -77,6 +83,7 @@ namespace PIGMServer.Game.Systems
                     }
                 }
 
+                ball.Altered = true;
                 ball.Parent.Position = ballPos;
             }
         }
@@ -87,14 +94,16 @@ namespace PIGMServer.Game.Systems
 
             if(position.x < 0 || position.x > 1280)
             {
-                ball.Direction.x = (short) -ball.Direction.x;
+                ball.Direction.x = (short)((-(ball.Direction.x - 100)) + 100);
                 position.x = Math.Max(Math.Min(position.x, (short) 1280), (short) 0);
+                ball.Altered = true;
             }
 
             if(position.y < 360 || position.y > 720)
             {
-                ball.Direction.y = (short) -ball.Direction.y;
+                ball.Direction.y = (short)((-(ball.Direction.y - 100)) + 100);
                 position.y = Math.Max(Math.Min(position.y, (short) 720), (short) 360);
+                ball.Altered = true;
             }
         }
 
@@ -117,9 +126,19 @@ namespace PIGMServer.Game.Systems
             return SystemTypes.Ball;
         }
 
-        protected override Message GatherAlterations(Ball alteredComponent)
+        protected override Message GatherAlterations(Ball ball)
         {
-            return new Message(1, 1);
+            short superOp = (short)SuperOps.Ball;
+            short subOp = (short) BallOps.Bounce;
+
+            short posX = ball.Parent.Position.x;
+            short posY = ball.Parent.Position.y;
+            byte[] posXData = Util.GetBytes(posX);
+            byte[] posYData = Util.GetBytes(posY);
+            byte[] dirXData = Util.GetBytes(ball.Direction.x);
+            byte[] dirYData = Util.GetBytes(ball.Direction.y);
+
+            return new Message(superOp, subOp, new byte[] { posXData[0], posXData[1], posYData[0], posYData[1], dirXData[0], dirXData[1], dirYData[0], dirYData[1]});
         }
     }
 }

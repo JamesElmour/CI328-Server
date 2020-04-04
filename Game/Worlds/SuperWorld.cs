@@ -7,30 +7,23 @@ using System.Threading.Tasks;
 
 namespace PIGMServer.Game.Worlds
 {
-    public abstract class OverWorld : GameClientHandler
+    public abstract class SuperWorld<T> : GameClientHandler where T : SubWorld
     {
-        public enum WorldStates
-        {
-            Initialising,
-            Loading,
-            Ready,
-            Playing
-        }
-
-        private List<SubWorld> SubWorlds = new List<SubWorld>();
+        public bool Destroy = false;
+        protected List<T> SubWorlds = new List<T>();
         //private List<WorldSlice> Slices = new List<WorldSlice>();
         private readonly int Tps;
-        private readonly float DeltaTime;
+        private float DeltaTime;
         private readonly int SubworldsPerFrame = 1;
         private int SliceCount;
         private int SubworldIndex = 0;
         private double TimeTillUpdate = 0;
         private DateTime PreviousDateTime;
 
-        public OverWorld(int tps = 10)
+        public SuperWorld(int tps = 60)
         {
             Tps = tps;
-            DeltaTime = 1.0f / tps;
+            DeltaTime = 1.0f / (float) tps;
             TimeTillUpdate = 1.0f / (float) Tps;
             PreviousDateTime = DateTime.Now;
 
@@ -48,12 +41,20 @@ namespace PIGMServer.Game.Worlds
         /// Add SubWorld to the OverWorld.
         /// </summary>
         /// <param name="world">SubWorld to be added.</param>
-        protected void AddSubWorld(SubWorld world)
+        protected virtual void AddSubWorld(T world)
         {
             SubWorlds.Add(world);
         }
 
         protected abstract void CreateSubWorlds();
+
+        public void TransmitAtlerations(int priority)
+        {
+            MessageQueue queue = new MessageQueue();
+            queue.Add(SubWorlds[SubworldIndex].GatherAlterations(priority));
+
+            SendQueue(Get(SubworldIndex), queue);
+        }
 
         #region World Slices and Updating
         /// <summary>
@@ -64,17 +65,6 @@ namespace PIGMServer.Game.Worlds
             int worldCount = SubWorlds.Count;
             SliceCount = (int) Math.Ceiling((float) worldCount / SubworldsPerFrame);
         }
-
-        /// <summary>
-        /// Generate the slices fo rthe OverWorld, assigning SubWorlds to them for updating.
-        /// </summary>
-        /*private void GenerateWorldSlices()
-        {            
-            for(int i = 0; i < SliceCount; i++)
-            {
-                Slices.Add(CreateSlice(i));
-            }
-        }*/
 
         /// <summary>
         /// Create and assign a Slice for the required index.
@@ -91,14 +81,24 @@ namespace PIGMServer.Game.Worlds
 
             return slice;
         }
-        
+
         /// <summary>
         /// Update the OverWorld.
         /// </summary>
         public void Update()
         {
-            if(IsFull && ShouldUpdate())
-                UpdateWorld();
+            if (IsFull && ShouldUpdate())
+            {
+                if (Clients.Count == AcceptLimit)
+                {
+                    UpdateWorld();
+                    TransmitAtlerations(1);
+                }
+                else
+                {
+                    Destroy = true;
+                }
+            }
         }
 
         private bool ShouldUpdate()
@@ -106,12 +106,13 @@ namespace PIGMServer.Game.Worlds
             DateTime currentDateTime = DateTime.Now;
             TimeSpan differenceTimeSpan = currentDateTime - PreviousDateTime;
             PreviousDateTime = currentDateTime;
-            double difference = differenceTimeSpan.TotalMilliseconds / 1000.0f;
+            double difference = differenceTimeSpan.TotalSeconds;
             TimeTillUpdate -= difference;
 
             if (TimeTillUpdate <= 0)
             {
-                TimeTillUpdate = 1.0d / (double) Tps;
+                DeltaTime = (float) differenceTimeSpan.TotalSeconds;
+                TimeTillUpdate = 1.0d / Tps;
                 return true;
             }
 
@@ -131,7 +132,8 @@ namespace PIGMServer.Game.Worlds
 
             SubWorld sub = SubWorlds[SubworldIndex];
             Client client = Get(sub.WorldIndex);
-            SendQueue(client, sub.Update(DeltaTime));
+            //SendQueue(client, sub.Update(DeltaTime));
+            sub.Update(0.01666666f);
         }
         #endregion
     }

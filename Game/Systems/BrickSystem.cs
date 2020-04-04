@@ -1,5 +1,6 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Network;
+using PIGMServer.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace PIGMServer.Game.Systems
 
         protected override void Process(Brick brick, float deltaTime)
         {
-            Collider collider = brick.Parent.Get<Collider>(SystemTypes.Collide);
+            Collider collider = brick.Parent.Get<Collider>(SystemTypes.Collider);
             if(HitBall(collider))
             {
                 Hit(brick);
@@ -25,12 +26,31 @@ namespace PIGMServer.Game.Systems
         void Hit(Brick brick)
         {
             brick.Health--;
-            brick.Parent.Destroy();
+            brick.Altered = true;
+
+            if(brick.Health == 0)
+                brick.Parent.Destroy();
         }
 
-        protected override Message GatherAlterations(Brick alteredComponent)
+        protected override Message GatherAlterations(Brick brick)
         {
-            return new Message(1, 1);
+            short superOp = (short) SuperOps.Brick;
+            short subOp;
+            List<byte> data = new List<byte>();
+            data.AddRange(Util.GetBytes(brick.X));
+            data.AddRange(Util.GetBytes(brick.Y));
+
+            if (brick.Health > 0)
+            {
+                subOp = (short) BrickOps.Hit;
+                data.AddRange(Util.GetBytes((short) brick.Health));
+            }
+            else
+            {
+                subOp = (short) BrickOps.Destroyed;
+            }
+
+            return new Message(superOp, subOp, data.ToArray());
         }
 
         private bool HitBall(Collider collider)
