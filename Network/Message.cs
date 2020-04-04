@@ -8,7 +8,9 @@ namespace PIGMServer.Network
 {
     public enum SuperOps
     {
-        Player
+        Player,
+        Ball,
+        Brick
     }
 
     public enum PlayerOps
@@ -16,6 +18,18 @@ namespace PIGMServer.Network
         DirectionChange,
         PositionUpdate
     }
+
+    public enum BallOps
+    {
+        Bounce
+    }
+
+    public enum BrickOps
+    {
+        Hit,
+        Destroyed
+    }
+
     
     public class Message
     {
@@ -41,9 +55,12 @@ namespace PIGMServer.Network
 
         public Message(byte[] data)
         {
-            SuperOp = data[1];
-            SubOp   = data[2];
-            Data    = data.Skip(1).ToArray();
+            if (data.Length > 2)
+            {
+                SuperOp = data[1];
+                SubOp = data[2];
+                Data = data.Skip(1).ToArray();
+            }
         }
 
         public byte[] Encode()
