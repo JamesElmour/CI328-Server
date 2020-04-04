@@ -26,24 +26,28 @@ namespace PIGMServer
 
             Thread managerThread = new Thread(() =>
             {
+                ClientAcceptor.OwnerCreationFunc = () =>
+                {
+                    Thread worldThread = new Thread(() =>
+                    {
+                        BreakoutSuperWorld testWorld = new BreakoutSuperWorld();
+                        ClientAcceptor.QueueOwner(testWorld);
+
+                        while (!testWorld.Destroy)
+                        {
+                            testWorld.Update();
+                        }
+
+                        ClientAcceptor.OwnerCreationFunc();
+                    });
+                    worldThread.Start();
+
+                    return 1;
+                };
+                ClientAcceptor.OwnerCreationFunc();
                 ClientAcceptor.Start(server);
             });
             managerThread.Start();
-
-
-            Thread worldThread = new Thread(() =>
-            {
-                OverWorld testWorld = new BreakoutOverworld();
-                ClientAcceptor.QueueOwner(testWorld);
-
-                while(true)
-                {
-                    testWorld.Update();
-                }
-            });
-            worldThread.Start();
-
-
         }
     }
 }

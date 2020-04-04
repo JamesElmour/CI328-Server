@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 namespace PIGMServer.Game
 {
-    public class GameClientHandler : ClientOwner
+    public abstract class GameClientHandler : ClientOwner
     {
 
-        private List<Client> Clients;
+        protected List<Client> Clients;
 
 
         public GameClientHandler()
@@ -24,10 +24,13 @@ namespace PIGMServer.Game
             AcceptedClients++;
         }
 
-        public override void HandleMessage(Client client, Message message)
+        public override void Remove(Client client)
         {
-            Console.WriteLine("Recieving message:");
-            
+            Clients.Remove(client);
+        }
+
+        public override void HandleMessage(Client client, Message message)
+        {            
             switch(message.GetSuperOp())
             {
                 case 1:
