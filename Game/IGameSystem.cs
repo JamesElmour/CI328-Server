@@ -10,10 +10,12 @@ namespace PIGMServer.Game
 {
     public interface IGameSystem
     {
-        List<Message> Update(float deltaTime);
+        void Update(float deltaTime);
         void Clear();
         void Remove(string name);
         //IGameComponent Get(string name);
         SystemTypes GetSystemType();
+        int GetPriority();
+        List<Message> GetAlterations();
     }
 }

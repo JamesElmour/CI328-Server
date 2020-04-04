@@ -25,7 +25,7 @@ namespace PIGMServer.Game
             Tag = tag;
         }
 
-        public void Add(GameComponent component) => Components.Add(component.System, component.Name);
+        public void Add(GameComponent component) => Components.Add(component.GetSystem(), component.Name);
         public void Destroy()
         {
             foreach (KeyValuePair <SystemTypes, string> pair in Components)

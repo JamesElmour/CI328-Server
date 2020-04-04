@@ -11,7 +11,7 @@ namespace PIGMServer.Game.Systems
     {
         Ball,
         Brick,
-        Collide,
+        Collider,
         Movable,
         Player,
         PowerUp,
@@ -24,24 +24,25 @@ namespace PIGMServer.Game.Systems
         private static readonly Dictionary<string, Dictionary<SystemTypes, IGameSystem>> Systems =
             new Dictionary<string, Dictionary<SystemTypes, IGameSystem>>();
 
-        private static readonly Dictionary<string, string> componentWorlds = new Dictionary<string, string>(8000);
+        private static readonly Dictionary<string, string> WorldComponents = new Dictionary<string, string>(8000);
+        private static readonly Dictionary<string, string> Entities = new Dictionary<string, string>(8000);
 
-        private static readonly Dictionary<Type, SystemTypes> TypeLookUp =
-            new Dictionary<Type, SystemTypes>()
+        private static readonly Dictionary<string, SystemTypes> TypeLookUp =
+            new Dictionary<string, SystemTypes>()
             {
-                { typeof(BallSystem),       SystemTypes.Ball },
-                { typeof(BrickSystem),      SystemTypes.Brick },
-                { typeof(ColliderSystem),   SystemTypes.Collide },
-                { typeof(MoveableSystem),   SystemTypes.Movable },
-                { typeof(PlayerSystem),     SystemTypes.Player },
-                { typeof(PowerUpSystem),    SystemTypes.PowerUp }
+                { typeof(BallSystem).Name,       SystemTypes.Ball },
+                { typeof(BrickSystem).Name,      SystemTypes.Brick },
+                { typeof(ColliderSystem).Name,   SystemTypes.Collider },
+                { typeof(MoveableSystem).Name,   SystemTypes.Movable },
+                { typeof(PlayerSystem).Name,     SystemTypes.Player },
+                { typeof(PowerUpSystem).Name,    SystemTypes.PowerUp }
             };
 
         public static void Add(string worldName, IGameSystem system)
         {
             SystemTypes type = system.GetSystemType();
 
-            if(!Systems.ContainsKey(worldName))
+            if (!Systems.ContainsKey(worldName))
             {
                 Systems.Add(worldName, new Dictionary<SystemTypes, IGameSystem>());
             }
@@ -51,40 +52,31 @@ namespace PIGMServer.Game.Systems
 
         public static IGameComponent Get<T>(string component)
         {
-            string worldName = componentWorlds[component];
-            dynamic system   = Systems[worldName][TypeLookUp[typeof(T)]];
+            string worldName = WorldComponents[component];
+            dynamic systems = Systems[worldName];
+            string systemName = typeof(T).Name + "System";
+            dynamic type = TypeLookUp[systemName];
+            dynamic system = systems[type];
             return system.Get(component);
         }
 
         public static T GetSystem<T>(string worldName) where T : IGameSystem
         {
-            SystemTypes systemType = TypeLookUp[typeof(T)];
-            return (T) Systems[worldName][systemType];
+            SystemTypes systemType = TypeLookUp[typeof(T).Name];
+            return (T)Systems[worldName][systemType];
         }
 
-        public static Type GetSystemClassFromType(SystemTypes systemType)
+        public static void MapComponentWorld(string world, string component)
         {
-            switch (systemType)
-            {
-                case SystemTypes.Ball:
-                    return typeof(BallSystem);
-                case SystemTypes.Brick:
-                    return typeof(BrickSystem);
-                case SystemTypes.Collide:
-                    return typeof(ColliderSystem);
-                case SystemTypes.Movable:
-                    return typeof(MoveableSystem);
-                case SystemTypes.Player:
-                    return typeof(PlayerSystem);
-                case SystemTypes.PowerUp:
-                    return typeof(PowerUpSystem);
-                default:
-                    throw new Exception("Invalid System Type provided.");
-            }
+            if (!WorldComponents.Contains(new KeyValuePair<string, string>(component, world)))
+                WorldComponents.Add(component, world);
+        }
+        public static void MapComponentEntity(string world, string entity)
+        {
+            if (!Entities.Contains(new KeyValuePair<string, string>(entity, world)))
+                Entities.Add(entity, world);
         }
 
-        public static void MapComponentWorld(string world, string component) => componentWorlds.Add(component, world);
-
-        public static void Remove(SystemTypes type, string name) => Systems[componentWorlds[name]][type].Remove(name);
+        public static void Remove(SystemTypes type, string name) => Systems[WorldComponents[name]][type].Remove(name);
     }
 }

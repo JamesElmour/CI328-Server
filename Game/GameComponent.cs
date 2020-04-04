@@ -12,7 +12,6 @@ namespace PIGMServer.Game
         public      string      Name        { get; private set; }
         public      bool        Altered =   false;
         public      GameEntity  Parent;
-        public      SystemTypes System  = SystemTypes.Unknown;
 
         public GameComponent(GameEntity parent)
         {
@@ -24,8 +23,20 @@ namespace PIGMServer.Game
             Guid id = Guid.NewGuid();
             Name = id.ToString();
         }
-         
-        public bool IsAltered() => Altered;
+
+        public bool IsAltered()
+        {
+            bool altered = Altered;
+            Altered = false;
+
+            return altered;
+        }
         public GameEntity GetParent => Parent;
+        public abstract SystemTypes GetSystem();
+
+        public string GetName()
+        {
+            return Name;
+        }
     }
 }

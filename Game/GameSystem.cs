@@ -14,17 +14,18 @@ namespace PIGMServer.Game
         protected readonly Dictionary<string, T> Components = new Dictionary<string, T>(ComponentLimit);
         protected readonly List<T> AlteredComponents        = new List<T>(ComponentLimit);
         protected readonly List<T> TemporaryComponents      = new List<T>(ComponentLimit);
-        protected readonly string WorldName;
+        protected readonly int     Priority                 = 1;
+        protected readonly string  WorldName;
 
         public GameSystem(string worldName)
         {
             WorldName = worldName;
         }
 
-        public List<Message> Update(float deltaTime)
+        public void Update(float deltaTime)
         {
             PreprocessComponents();
-            return UpdateComponents(deltaTime);
+            UpdateComponents(deltaTime);
         }
         
         private void PreprocessComponents()
@@ -42,28 +43,30 @@ namespace PIGMServer.Game
        /// Cycle through available currently available components, calling their update methods.
        /// </summary>
        /// <param name="deltaTime">DeltaTime passed from parent GameOverWorld.</param>
-        private List<Message> UpdateComponents(float deltaTime)
+        private void UpdateComponents(float deltaTime)
         {
-            AlteredComponents.Clear();
-
             // Get current components, more may be generated during the updating cycle. Causing an error.
             TemporaryComponents.Clear();
             TemporaryComponents.AddRange(Components.Values);
 
-            List<Message> messageQueue = new List<Message>();
 
             foreach (T component in TemporaryComponents)
             {
                 Process(component, deltaTime);
-
-                if (component.IsAltered())
-                    AlteredComponents.Add(component);
-
             }
+        }
 
-            foreach (T altered in AlteredComponents)
+        public List<Message> GetAlterations()
+        {
+            List<Message> messageQueue = new List<Message>();
+            AlteredComponents.Clear();
+
+            foreach (T component in TemporaryComponents)
             {
-                messageQueue.Add(GatherAlterations(altered));
+                if (component.IsAltered())
+                {
+                    messageQueue.Add(GatherAlterations(component));
+                }
             }
 
             return messageQueue;
@@ -92,12 +95,23 @@ namespace PIGMServer.Game
 
         public void Add(T component)
         {
-            string name = component.GetParent.Name;
+            string name = component.GetName();
             Components.Add(name, component);
 
-            SystemManager.MapComponentWorld(WorldName, name);
+            SystemManager.MapComponentWorld(WorldName, component.GetName());
         }
 
+        public void Add(IEnumerable<T> components)
+        {
+            foreach(T comp in components)
+            {
+                Add(comp);
+            }
+        }
+
+        public int Count() => Components.Count;
+
         public abstract SystemTypes GetSystemType();
+        public int GetPriority() => Priority;
     }
 }

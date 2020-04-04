@@ -10,5 +10,6 @@ namespace PIGMServer.Game
     {
         GameEntity GetParent { get; }
         bool IsAltered();
+        string GetName();
     }
 }
