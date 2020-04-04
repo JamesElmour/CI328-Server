@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -13,6 +14,7 @@ namespace PIGMServer.Network
     {
         static readonly List<Client> clients = new List<Client>();
         static readonly List<ClientOwner> acceptQueue = new List<ClientOwner>();
+        public static Func<int> OwnerCreationFunc = null;
 
         public static void AddTCPClient(TcpClient tcpClient)
         {
@@ -30,6 +32,11 @@ namespace PIGMServer.Network
                     acceptQueue.Remove(nextOwner);
                 }
             }
+            else
+            {
+                OwnerCreationFunc();
+                AddTCPClient(tcpClient);
+            }
 
         }
 
@@ -38,8 +45,6 @@ namespace PIGMServer.Network
             Thread acceptThread = new Thread(() =>
             {
                 TcpClient newClient = server.AcceptTcpClient();
-                Console.WriteLine("A client connected.");
-
                 AddTCPClient(newClient);
             });
 
@@ -62,7 +67,16 @@ namespace PIGMServer.Network
         public static void SendMessage(Client client, Message message)
         {
             byte[] response = message.Encode();
-            client.Stream.Write(response, 0, response.Length);
+
+            try
+            {
+                client.Stream.Write(response, 0, response.Length);
+            }
+            catch(IOException e)
+            {
+                client.Owner.Remove(client);
+                clients.Remove(client);
+            }
         }
 
         public static void QueueOwner(ClientOwner owner)

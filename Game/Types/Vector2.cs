@@ -22,13 +22,13 @@ namespace PIGMServer.Game.Types
             this.y = y;
         }
 
-        public Vector2 Normalize()
+        public KeyValuePair<float, float> Normalize()
         {
-            short magnitude = (short) (this.x + this.y);
-            short x = (short) (this.x / magnitude);
-            short y = (short) (this.y / magnitude);
+            float magnitude = (Math.Abs(this.x) + Math.Abs(this.y));
+            float x = this.x / magnitude;
+            float y = this.y / magnitude;
 
-            return new Vector2(x, y);
+            return new KeyValuePair<float, float>(x, y);
         }
 
         public byte[] ToByteArray()

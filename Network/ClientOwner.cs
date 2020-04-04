@@ -28,5 +28,6 @@ namespace PIGMServer.Network
                 ClientAcceptor.SendMessage(client, message);
             }
         }
+        public abstract void Remove(Client client);
     }
 }

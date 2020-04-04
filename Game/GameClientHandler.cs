@@ -51,20 +51,12 @@ namespace PIGMServer.Game
             switch(message.GetSubOp())
             {
                 case 1:
-                    PlayerDirectionChange(client, message);
+                    PlayerPositionChange(client, message);
                     break;
             }
         }
 
-        private void PlayerDirectionChange(Client client, Message message)
-        {
-            byte[] data = message.GetData();
-            string name = "Player";
-            short direction = data[0];
-
-            Player player = (Player) SystemManager.Get<PlayerSystem>(name);
-            player.Direction = direction;
-        }
+        protected abstract void PlayerPositionChange(Client client, Message message);
 
         private void PlayerUsePowerUp(Message message)
         {
