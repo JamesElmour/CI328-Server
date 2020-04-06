@@ -39,7 +39,7 @@ namespace PIGMServer.Game.Worlds.Levels
             GameEntity player = world.GetEntity("Player");
 
             byte[] data = message.GetData();
-            data = (data.Length == 2) ? data : new byte[] { data[0], 0 };
+            data = (data.Length == 2) ? data : new byte[] { 0, data[0] };
             data = new byte[] { data[1], data[0] };
             short pos = BitConverter.ToInt16(data, 0);
 

@@ -27,6 +27,8 @@ namespace PIGMServer.Game.Systems
             parent.Position.x += velocity;
             component.Altered = true;
 
+            Console.WriteLine(parent.Position.x);
+
             parent.Position.x = Math.Max(Math.Min(parent.Position.x, (short) (1280)), (short) (0));
         }
 

@@ -12,6 +12,8 @@ namespace PIGMServer.Game.Components
     {
         public Vector2 Direction;
         public float Speed = 600;
+        public bool WasCollidingWithPlayer = false;
+        public bool WasCollidingWithBrick = false;
 
         public Ball(GameEntity parent) : base(parent)
         {

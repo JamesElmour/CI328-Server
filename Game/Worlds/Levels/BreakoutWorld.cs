@@ -44,7 +44,7 @@ namespace PIGMServer.Game.Worlds.Levels
         {
             PlayerSystem   playerSystem   = SystemManager.GetSystem<PlayerSystem>(Name);
             ColliderSystem colliderSystem = SystemManager.GetSystem<ColliderSystem>(Name);
-            GameEntity     entity         = new GameEntity("Player", new Vector2(300, 200));
+            GameEntity     entity         = new GameEntity("Player", new Vector2(300, 680), "Player");
             Player         player         = new Player(entity);
             Collider       collider       = new Collider(entity, 256, 32, true);
 
@@ -62,8 +62,10 @@ namespace PIGMServer.Game.Worlds.Levels
             BallSystem      ballSystem      = SystemManager.GetSystem<BallSystem>(Name);
             ColliderSystem  colliderSystem  = SystemManager.GetSystem<ColliderSystem>(Name);
             GameEntity      entity          = new GameEntity("Ball", new Vector2(300, 600), "Ball");
-            Ball            ball            = new Ball(entity);
-                            ball.Direction  = new Vector2(133, 34);
+            Ball            ball            = new Ball(entity)
+            {
+                            Direction       = new Vector2(133, 34)
+            };
             Collider        collider        = new Collider(entity, 32, 32, true);
 
             ballSystem.Add(ball);
@@ -81,7 +83,7 @@ namespace PIGMServer.Game.Worlds.Levels
             {
                 for (int y =  0; y < 6; y++)
                 {
-                    Vector2 position    = new Vector2((short)(x * 64), (short)(y * 16 + 420));
+                    Vector2 position    = new Vector2((short)(x * 64 + 60), (short)(y * 16 + 420));
                     string  name        = "Brick_" + x + "_" + y;
                     GameEntity parent   = new GameEntity(name, position, "Brick");
                     Collider   collider = new Collider(parent, 64, 16, false);

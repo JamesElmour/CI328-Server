@@ -47,44 +47,29 @@ namespace PIGMServer.Game.Systems
         {
             int foundIndex = collider.CollidingWith.IndexOf("Brick");
 
-            if(foundIndex != -1)
+            if (!ball.WasCollidingWithBrick && foundIndex != -1)
             {
-                Collider brick = (Collider) collider.CollidedComponents[foundIndex];
+                Collider brick = (Collider)collider.CollidedComponents[foundIndex];
                 Vector2 ballPos = ball.Parent.Position;
                 Vector2 brickPos = brick.Parent.Position;
-                KeyValuePair<float, float> collisionVector = new Vector2((short)(ballPos.x - (brickPos.x + 32)), (short) (ballPos.y - brickPos.y)).Normalize();
+                KeyValuePair<float, float> collisionVector = new Vector2((short)(ballPos.x - (brickPos.x + 32)), (short)(ballPos.y - brickPos.y)).Normalize();
                 float colVx = collisionVector.Key;
-                float colVy = collisionVector.Value;
 
                 if (Math.Abs(colVx) > 0.7)
                 {
-                    ball.Direction.x = (short) ((- (ball.Direction.x - 100)) + 100);
-
-                    if(colVx < 0)
-                    {
-                        ballPos.x = brickPos.x;
-                    }
-                    else
-                    {
-                        ballPos.x = (short) (brickPos.x + 64);
-                    }
+                    ball.Direction.x = (short)((-(ball.Direction.x - 100)) + 100);
                 }
                 else
                 {
-                    ball.Direction.y = (short) ((-(ball.Direction.y - 100)) + 100);
-
-                    if (colVy < 0)
-                    {
-                        ballPos.y = brickPos.y;
-                    }
-                    else
-                    {
-                        ballPos.y = (short) (brickPos.y + 16);
-                    }
+                    ball.Direction.y = (short)((-(ball.Direction.y - 100)) + 100);
                 }
 
                 ball.Altered = true;
-                ball.Parent.Position = ballPos;
+                ball.WasCollidingWithBrick = true;
+            }
+            else
+            {
+                ball.WasCollidingWithBrick = false;
             }
         }
 
@@ -110,14 +95,24 @@ namespace PIGMServer.Game.Systems
         private void PlayerBounce(Ball ball, Collider collider)
         {
             int foundIndex = collider.CollidingWith.IndexOf("Player");
-            if (foundIndex != -1)
+            if (foundIndex != -1 && !ball.WasCollidingWithPlayer)
             {
-                Player player = (Player) collider.CollidedComponents[foundIndex];
+                Collider player = (Collider) collider.CollidedComponents[foundIndex];
                 Vector2 position = collider.Parent.Position;
                 Vector2 playerPos = player.Parent.Position;
 
-                short newDirection = (short) (((position.x - playerPos.x) / 256) - 0.5f);
-                ball.Direction.x = newDirection;
+                float newDirection = ((((float) position.x - (float) playerPos.x) / 256) - 0.5f);
+                      newDirection = ((100 * newDirection) + 100);
+                ball.Direction.x = (short) newDirection;
+                ball.Direction.y = (short) ((-(ball.Direction.y - 100)) + 100);
+
+                ball.Parent.Position.y = (short) (player.Parent.Position.y - 24);
+
+                ball.WasCollidingWithPlayer = true;
+            }
+            else if (ball.WasCollidingWithPlayer)
+            {
+                ball.WasCollidingWithPlayer = false;
             }
         }
 
