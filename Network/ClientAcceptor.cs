@@ -17,10 +17,10 @@ namespace PIGMServer.Network
 
         public static void AddTCPClient(TcpClient tcpClient)
         {
-            ClientOwner nextOwner = acceptQueue[0];
 
-            if (nextOwner.CanAcceptClient())
+            if (acceptQueue.Count > 0)
             {
+                ClientOwner nextOwner = acceptQueue[0];
                 Client newClient = new Client(tcpClient);
                 clients.Add(newClient);
                 nextOwner.Give(newClient);
@@ -43,8 +43,11 @@ namespace PIGMServer.Network
         {
             Thread acceptThread = new Thread(() =>
             {
-                TcpClient newClient = server.AcceptTcpClient();
-                AddTCPClient(newClient);
+                while (true)
+                {
+                    TcpClient newClient = server.AcceptTcpClient();
+                    AddTCPClient(newClient);
+                }
             });
 
             acceptThread.Name = "Accept Thread";
@@ -53,11 +56,15 @@ namespace PIGMServer.Network
             while (true)
             {
 
-                Client[] tempClients = clients.ToArray<Client>();
+                List<Client> tempClients = clients;
+                int clientCount = tempClients.Count;
 
-                foreach (Client client in tempClients)
+                for (int i = 0; i < clientCount; i++)
                 {
-                    CheckClient(client);
+                    Client client = tempClients[i];
+
+                    if (client != null && client.tcpClient.Connected)
+                        CheckClient(client);
                 }
 
 
@@ -70,13 +77,24 @@ namespace PIGMServer.Network
 
             try
             {
-                client.Stream.Write(response, 0, response.Length);
+                if (client.Connected && client.Stream.CanWrite)
+                {
+                    Console.WriteLine("Sending:");
+                    foreach (byte b in response)
+                    {
+                        Console.Write(b);
+                        Console.Write(" ");
+                    }
+
+                    client.Stream.Write(response, 0, response.Length);
+                }
             }
-            catch(IOException e)
+            catch (IOException e)
             {
-                client.Owner.Remove(client);
-                clients.Remove(client);
+                client.tcpClient.Close();
+                //client.Owner.Remove(client);
             }
+            catch (Exception e) { }
         }
 
         public static void QueueOwner(ClientOwner owner)
@@ -121,6 +139,7 @@ namespace PIGMServer.Network
                     "Sec-WebSocket-Accept: " + swkaSha1Base64 + "\r\n\r\n");
 
                 stream.Write(response, 0, response.Length);
+                appClient.Connected = true;
             }
             else
             {

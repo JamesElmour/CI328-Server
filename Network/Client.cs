@@ -7,6 +7,7 @@ namespace PIGMServer.Network
         public TcpClient tcpClient { get; private set; }
         public NetworkStream Stream { get; private set; }
         public ClientOwner Owner { get; private set; }
+        public bool Connected = false;
 
         public Client(TcpClient newClient)
         {

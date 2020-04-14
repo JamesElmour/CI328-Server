@@ -12,14 +12,14 @@ namespace PIGMServer.Network
         public abstract void HandleMessage(Client client, Message message);
         public bool CanAcceptClient()
         {
-            return (AcceptedClients <= AcceptLimit);
+            return (AcceptedClients < AcceptLimit);
         }
 
         public void SendQueue(Client client, MessageQueue queue)
         {
             List<Message> messages = queue.Get();
 
-            foreach(Message message in messages)
+            foreach (Message message in messages)
             {
                 ClientAcceptor.SendMessage(client, message);
             }
