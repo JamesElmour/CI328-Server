@@ -1,8 +1,4 @@
-﻿using PIGMServer.Game.Components;
-using PIGMServer.Game.Systems;
-using PIGMServer.Game.Worlds;
-using PIGMServer.Network;
-using System;
+﻿using PIGMServer.Network;
 using System.Collections.Generic;
 
 namespace PIGMServer.Game
@@ -30,8 +26,8 @@ namespace PIGMServer.Game
         }
 
         public override void HandleMessage(Client client, Message message)
-        {            
-            switch(message.GetSuperOp())
+        {
+            switch (message.GetSuperOp())
             {
                 case 1:
                     ProcessPlayerMesssage(client, message);
@@ -44,11 +40,16 @@ namespace PIGMServer.Game
             return Clients[index];
         }
 
+        public bool Exists(Client client)
+        {
+            return Clients.Contains(client);
+        }
+
         #region Player Messages
         private void ProcessPlayerMesssage(Client client, Message message)
         {
 
-            switch(message.GetSubOp())
+            switch (message.GetSubOp())
             {
                 case 1:
                     PlayerPositionChange(client, message);

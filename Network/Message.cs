@@ -5,29 +5,39 @@ namespace PIGMServer.Network
 {
     public enum SuperOps
     {
+        Utility,
         Player,
         Ball,
         Brick
     }
 
+    public enum UtilityOps
+    {
+        SetPlayer,
+        SetOpponent,
+    }
+
     public enum PlayerOps
     {
         DirectionChange,
-        PositionUpdate
+        PositionUpdate,
+        Spawn
     }
 
     public enum BallOps
     {
-        Bounce
+        Bounce,
+        Spawn
     }
 
     public enum BrickOps
     {
         Hit,
-        Destroyed
+        Destroyed,
+        Spawn
     }
 
-    
+
     public class Message
     {
         public enum Opcode
@@ -39,6 +49,7 @@ namespace PIGMServer.Network
             PlayerReady
         }
 
+        public int Player = 1;
         private readonly int SuperOp;
         private readonly int SubOp;
         private byte[] Data;
@@ -46,8 +57,8 @@ namespace PIGMServer.Network
         public Message(int superOp, int subOp, byte[] data = null)
         {
             this.SuperOp = superOp;
-            this.SubOp   = subOp;
-            Data         = data;
+            this.SubOp = subOp;
+            Data = data;
         }
 
         public Message(byte[] data)
@@ -71,7 +82,7 @@ namespace PIGMServer.Network
 
             byte length = (byte)(2 + Data.Length);
 
-            byte[] encoded = { rfcOp, length, (byte) SuperOp, (byte) SubOp };
+            byte[] encoded = { rfcOp, length, (byte) (SuperOp + (128 * Player)), (byte)SubOp };
             byte[] newData = new byte[4 + Data.Length];
 
             Array.Copy(encoded, newData, encoded.Length);
