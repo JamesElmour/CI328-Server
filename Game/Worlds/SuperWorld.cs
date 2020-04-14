@@ -11,17 +11,12 @@ namespace PIGMServer.Game.Worlds
         private readonly int Tps;
         private float DeltaTime;
         private readonly int SubworldsPerFrame = 1;
-        private int SliceCount;
-        private int SubworldIndex = 0;
-        private double TimeTillUpdate = 0;
-        private DateTime PreviousDateTime;
+        protected int SubworldIndex = 0;
 
         public SuperWorld(int tps = 60)
         {
             Tps = tps;
-            DeltaTime = 1.0f / (float) tps;
-            TimeTillUpdate = 1.0f / (float) Tps;
-            PreviousDateTime = DateTime.Now;
+            DeltaTime = 1.0f / (float)tps;
 
             Start();
         }
@@ -44,39 +39,7 @@ namespace PIGMServer.Game.Worlds
 
         protected abstract void CreateSubWorlds();
 
-        public void TransmitAtlerations(int priority)
-        {
-            MessageQueue queue = new MessageQueue();
-            queue.Add(SubWorlds[SubworldIndex].GatherAlterations(priority));
-
-            SendQueue(Get(SubworldIndex), queue);
-        }
-
-        #region World Slices and Updating
-        /// <summary>
-        /// Calculate the number of slices required.
-        /// </summary>
-        private void CalculateSliceCount()
-        {
-            int worldCount = SubWorlds.Count;
-            SliceCount = (int) Math.Ceiling((float) worldCount / SubworldsPerFrame);
-        }
-
-        /// <summary>
-        /// Create and assign a Slice for the required index.
-        /// </summary>
-        /// <param name="index">Start index of SubWorlds array to start assigning SubWorlds from.</param>
-        /// <returns>Created WorldSlice</returns>
-        private WorldSlice CreateSlice(int index)
-        {
-            int start = index * SubworldsPerFrame;
-            int end   = (SubWorlds.Count < SubworldsPerFrame) ? SubWorlds.Count : SubworldsPerFrame;
-
-            WorldSlice slice = new WorldSlice();
-            slice.AddRange(SubWorlds.GetRange(start, end));
-
-            return slice;
-        }
+        public abstract void TransmitAtlerations(int priority);
 
         /// <summary>
         /// Update the OverWorld.
@@ -99,38 +62,26 @@ namespace PIGMServer.Game.Worlds
 
         private bool ShouldUpdate()
         {
-            DateTime currentDateTime = DateTime.Now;
-            TimeSpan differenceTimeSpan = currentDateTime - PreviousDateTime;
-            PreviousDateTime = currentDateTime;
-            double difference = differenceTimeSpan.TotalSeconds;
-            TimeTillUpdate -= difference;
-
-            if (TimeTillUpdate <= 0)
-            {
-                DeltaTime = (float) differenceTimeSpan.TotalSeconds;
-                TimeTillUpdate = 1.0d / Tps;
-                return true;
-            }
-
-            return false;
+            double TimeTillUpdate = 1.0d / Tps / 2;
+            Thread.Sleep((int)(TimeTillUpdate * 500));
+            return true;
         }
-        
+
         /// <summary>
         /// Update the next slice.
         /// </summary>
         private void UpdateWorld()
         {
             SubworldIndex++;
-            if(SubworldIndex == SubWorlds.Count)
+            if (SubworldIndex == SubWorlds.Count)
             {
                 SubworldIndex = 0;
             }
 
             SubWorld sub = SubWorlds[SubworldIndex];
-            Client client = Get(sub.WorldIndex);
+            //Client client = Get(sub.WorldIndex);
             //SendQueue(client, sub.Update(DeltaTime));
             sub.Update(0.01666666f);
         }
-        #endregion
     }
 }

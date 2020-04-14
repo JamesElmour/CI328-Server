@@ -6,16 +6,26 @@ namespace PIGMServer.Game.Worlds
 {
     public abstract class SubWorld : World
     {
+        public bool DummyWorld = false;
         protected Dictionary<string, IGameSystem> Systems = new Dictionary<string, IGameSystem>();
         protected Dictionary<string, GameEntity> Entities = new Dictionary<string, GameEntity>();
-        private MessageQueue Queue = new MessageQueue();
+        private List<Message> PreviousMessages = new List<Message>();
+
         public int WorldIndex { get; private set; }
 
         public SubWorld(int index)
         {
             WorldIndex = index;
+        }
+
+        public MessageQueue Create()
+        {
+            MessageQueue queue = new MessageQueue();
+
             SetupSystems();
             SetupComponents();
+
+            return queue;
         }
 
         /// <summary>
@@ -43,7 +53,7 @@ namespace PIGMServer.Game.Worlds
         /// <param name="deltaTime">Deltatime passed by the OverWorld.</param>
         private void UpdateSystems(float deltaTime)
         {
-            foreach(IGameSystem system in Systems.Values)
+            foreach (IGameSystem system in Systems.Values)
             {
                 system.Update(deltaTime);
             }
@@ -64,27 +74,32 @@ namespace PIGMServer.Game.Worlds
         public T GetSystem<T>() where T : IGameSystem
         {
             string name = typeof(T).Name;
-            return (T) Systems[name];
+            return (T)Systems[name];
         }
 
         public List<Message> GatherAlterations(int priority)
         {
-            List<Message> messages = new List<Message>();
-            
+            PreviousMessages = new List<Message>();
+
             foreach (IGameSystem system in Systems.Values)
             {
-                if(system.GetPriority() >= priority)
+                if (system.GetPriority() >= priority)
                 {
-                    messages.AddRange(system.GetAlterations());
+                    PreviousMessages.AddRange(system.GetAlterations());
                 }
             }
 
-            return messages;
+            return PreviousMessages;
         }
 
         public GameEntity GetEntity(string name)
         {
             return Entities[name];
+        }
+
+        public List<Message> GetPreviousAlterations()
+        {
+            return PreviousMessages;
         }
     }
 }
