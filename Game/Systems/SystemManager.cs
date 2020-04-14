@@ -18,12 +18,17 @@ namespace PIGMServer.Game.Systems
 
     public static class SystemManager
     {
-        //[ThreadStatic]  // One instance per thread.
-        private static readonly Dictionary<string, Dictionary<SystemTypes, IGameSystem>> Systems =
-            new Dictionary<string, Dictionary<SystemTypes, IGameSystem>>();
+        // One instance per thread.
+        private static readonly ThreadLocal<Dictionary<string, Dictionary<SystemTypes, IGameSystem>>> Systems = new ThreadLocal<Dictionary<string, Dictionary<SystemTypes, IGameSystem>>>
+            (() => { return new Dictionary<string, Dictionary<SystemTypes, IGameSystem>>(); });
 
-        private static readonly Dictionary<string, string> WorldComponents = new Dictionary<string, string>(8000);
-        private static readonly Dictionary<string, string> Entities = new Dictionary<string, string>(8000);
+        // One instance per thread.
+        private static readonly ThreadLocal<Dictionary<string, string>> WorldComponents = new ThreadLocal<Dictionary<string, string>>
+        (() => { return new Dictionary<string, string>(8000); });
+
+        // One instance per thread.
+        private static readonly ThreadLocal<Dictionary<string, string>> Entities = new ThreadLocal<Dictionary<string, string>>
+        (() => { return new Dictionary<string, string>(8000); });
 
         private static readonly Dictionary<string, SystemTypes> TypeLookUp =
             new Dictionary<string, SystemTypes>()
@@ -40,18 +45,18 @@ namespace PIGMServer.Game.Systems
         {
             SystemTypes type = system.GetSystemType();
 
-            if (!Systems.ContainsKey(worldName))
+            if (!Systems.Value.ContainsKey(worldName))
             {
-                Systems.Add(worldName, new Dictionary<SystemTypes, IGameSystem>());
+                Systems.Value.Add(worldName, new Dictionary<SystemTypes, IGameSystem>());
             }
 
-            Systems[worldName].Add(type, system);
+            Systems.Value[worldName].Add(type, system);
         }
 
         public static IGameComponent Get<T>(string component)
         {
-            string worldName = WorldComponents[component];
-            dynamic systems = Systems[worldName];
+            string worldName = WorldComponents.Value[component];
+            dynamic systems = WorldComponents.Value[worldName];
             string systemName = typeof(T).Name + "System";
             dynamic type = TypeLookUp[systemName];
             dynamic system = systems[type];
@@ -61,20 +66,20 @@ namespace PIGMServer.Game.Systems
         public static T GetSystem<T>(string worldName) where T : IGameSystem
         {
             SystemTypes systemType = TypeLookUp[typeof(T).Name];
-            return (T)Systems[worldName][systemType];
+            return (T)Systems.Value[worldName][systemType];
         }
 
         public static void MapComponentWorld(string world, string component)
         {
-            if (!WorldComponents.Contains(new KeyValuePair<string, string>(component, world)))
-                WorldComponents.Add(component, world);
+            if (!WorldComponents.Value.Contains(new KeyValuePair<string, string>(component, world)))
+                WorldComponents.Value.Add(component, world);
         }
         public static void MapComponentEntity(string world, string entity)
         {
-            if (!Entities.Contains(new KeyValuePair<string, string>(entity, world)))
-                Entities.Add(entity, world);
+            if (!Entities.Value.Contains(new KeyValuePair<string, string>(entity, world)))
+                Entities.Value.Add(entity, world);
         }
 
-        public static void Remove(SystemTypes type, string name) => Systems[WorldComponents[name]][type].Remove(name);
+        public static void Remove(SystemTypes type, string name) => Systems.Value[WorldComponents.Value[name]][type].Remove(name);
     }
 }
