@@ -1,11 +1,7 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Network;
 using PIGMServer.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PIGMServer.Game.Systems
 {
@@ -17,7 +13,7 @@ namespace PIGMServer.Game.Systems
         protected override void Process(Brick brick, float deltaTime)
         {
             Collider collider = brick.Parent.Get<Collider>(SystemTypes.Collider);
-            if(HitBall(collider))
+            if (HitBall(collider))
             {
                 Hit(brick);
             }
@@ -28,13 +24,13 @@ namespace PIGMServer.Game.Systems
             brick.Health--;
             brick.Altered = true;
 
-            if(brick.Health == 0)
+            if (brick.Health == 0)
                 brick.Parent.Destroy();
         }
 
         protected override Message GatherAlterations(Brick brick)
         {
-            short superOp = (short) SuperOps.Brick;
+            short superOp = (short)SuperOps.Brick;
             short subOp;
             List<byte> data = new List<byte>();
             data.AddRange(Util.GetBytes(brick.X));
@@ -42,12 +38,12 @@ namespace PIGMServer.Game.Systems
 
             if (brick.Health > 0)
             {
-                subOp = (short) BrickOps.Hit;
-                data.AddRange(Util.GetBytes((short) brick.Health));
+                subOp = (short)BrickOps.Hit;
+                data.AddRange(Util.GetBytes((short)brick.Health));
             }
             else
             {
-                subOp = (short) BrickOps.Destroyed;
+                subOp = (short)BrickOps.Destroyed;
             }
 
             return new Message(superOp, subOp, data.ToArray());

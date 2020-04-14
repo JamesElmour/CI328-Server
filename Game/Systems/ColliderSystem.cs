@@ -1,11 +1,6 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Game.Types;
 using PIGMServer.Network;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PIGMServer.Game.Systems
 {
@@ -25,10 +20,10 @@ namespace PIGMServer.Game.Systems
         {
             if (!component.Active)
                 return;
-                
-            foreach(Collider other in TemporaryComponents)
+
+            foreach (Collider other in TemporaryComponents)
             {
-                if(Collides(component, other))
+                if (Collides(component, other))
                 {
                     ExecuteCollision(component, other);
                 }
@@ -40,7 +35,7 @@ namespace PIGMServer.Game.Systems
             component.Colliding = true;
             other.Colliding = true;
 
-            if(tag.Equals("Brick"))
+            if (tag.Equals("Brick"))
             {
                 int a = 2;
             }

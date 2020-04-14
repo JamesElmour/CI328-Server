@@ -2,10 +2,6 @@
 using PIGMServer.Network;
 using PIGMServer.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace PIGMServer.Game.Systems
@@ -21,24 +17,22 @@ namespace PIGMServer.Game.Systems
 
             GameEntity parent = component.Parent;
             short speed = component.Speed;
-            short direction = (short) (component.Direction - 1);
-            short velocity  = (short) (direction * speed * deltaTime);
+            short direction = (short)(component.Direction - 1);
+            short velocity = (short)(direction * speed * deltaTime);
 
             parent.Position.x += velocity;
             component.Altered = true;
 
-            Console.WriteLine(parent.Position.x);
-
-            parent.Position.x = Math.Max(Math.Min(parent.Position.x, (short) (1280)), (short) (0));
+            parent.Position.x = Math.Max(Math.Min(parent.Position.x, (short)(1280)), (short)(0));
         }
 
         protected override Message GatherAlterations(Player alteredComponent)
         {
             short newPosition = alteredComponent.Parent.Position.x;
-            short superOp   = (short) SuperOps.Player;
-            short subOp     = (short) PlayerOps.PositionUpdate;
+            short superOp = (short)SuperOps.Player;
+            short subOp = (short)PlayerOps.PositionUpdate;
             byte[] byteData = Util.GetBytes(newPosition, 2);
-                
+
             return new Message(superOp, subOp, byteData);
         }
 

@@ -1,10 +1,5 @@
 ﻿using PIGMServer.Game.Systems;
 using PIGMServer.Game.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PIGMServer.Game.Components
 {
@@ -17,8 +12,8 @@ namespace PIGMServer.Game.Components
 
         public Brick(GameEntity parent, int x, int y) : base(parent)
         {
-            X = (short) x;
-            Y = (short) y;
+            X = (short)x;
+            Y = (short)y;
         }
 
         public override SystemTypes GetSystem()
