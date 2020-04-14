@@ -79,13 +79,6 @@ namespace PIGMServer.Network
             {
                 if (client.Connected && client.Stream.CanWrite)
                 {
-                    Console.WriteLine("Sending:");
-                    foreach (byte b in response)
-                    {
-                        Console.Write(b);
-                        Console.Write(" ");
-                    }
-
                     client.Stream.Write(response, 0, response.Length);
                 }
             }

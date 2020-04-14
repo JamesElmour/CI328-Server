@@ -1,12 +1,13 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Game.Types;
+using PIGMServer.Game.Worlds;
 using PIGMServer.Network;
 
 namespace PIGMServer.Game.Systems
 {
     public class ColliderSystem : GameSystem<Collider>
     {
-        public ColliderSystem(string worldName) : base(worldName)
+        public ColliderSystem(SubWorld world) : base(world)
         { }
 
         protected override void Preprocess(Collider component)

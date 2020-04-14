@@ -1,11 +1,12 @@
 ﻿using PIGMServer.Game.Components;
+using PIGMServer.Game.Worlds;
 using PIGMServer.Network;
 
 namespace PIGMServer.Game.Systems
 {
     class PowerUpSystem : GameSystem<PowerUp>
     {
-        public PowerUpSystem(string worldName) : base(worldName)
+        public PowerUpSystem(SubWorld world) : base(world)
         { }
 
         protected override void Process(PowerUp component, float deltaTime)

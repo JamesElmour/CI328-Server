@@ -14,6 +14,7 @@ namespace PIGMServer.Game
         public string Tag { get; protected set; }
         private Dictionary<SystemTypes, string> Components = new Dictionary<SystemTypes, string>();
         public Vector2 Position;
+        public bool Destroy = false;
 
         public GameEntity(string name, Vector2 position = null, string tag = "")
         {
@@ -26,26 +27,7 @@ namespace PIGMServer.Game
         }
 
         public void Add(GameComponent component) => Components.Add(component.GetSystem(), component.Name);
-        public void Destroy()
-        {
-            foreach (KeyValuePair <SystemTypes, string> pair in Components)
-            {
-                SystemManager.Remove(pair.Key, pair.Value);
-            }
-        }
 
         public string Get(SystemTypes type) => Components[type];
-
-        public T Get<T>(SystemTypes type)
-        {
-            return (T) SystemManager.Get<T>(Get(type));
-        }
-
-        public T Find<T>(SystemTypes type) where T : IGameSystem
-        {
-            string component = Get(type);
-            return (T) SystemManager.Get<T>(component); ;
-        }
-
     }
 }

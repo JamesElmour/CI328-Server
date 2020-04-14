@@ -1,4 +1,5 @@
 ﻿using PIGMServer.Game.Components;
+using PIGMServer.Game.Worlds;
 using PIGMServer.Network;
 using PIGMServer.Utilities;
 using System;
@@ -8,7 +9,7 @@ namespace PIGMServer.Game.Systems
 {
     public class PlayerSystem : GameSystem<Player>
     {
-        public PlayerSystem(string worldName) : base(worldName)
+        public PlayerSystem(SubWorld world) : base(world)
         { }
 
         protected override void Process(Player component, float deltaTime)

@@ -1,4 +1,5 @@
 ﻿using PIGMServer.Game.Components;
+using PIGMServer.Game.Worlds;
 using PIGMServer.Network;
 using PIGMServer.Utilities;
 using System.Collections.Generic;
@@ -7,12 +8,12 @@ namespace PIGMServer.Game.Systems
 {
     public class BrickSystem : GameSystem<Brick>
     {
-        public BrickSystem(string worldName) : base(worldName)
+        public BrickSystem(SubWorld world) : base(world)
         { }
 
         protected override void Process(Brick brick, float deltaTime)
         {
-            Collider collider = brick.Parent.Get<Collider>(SystemTypes.Collider);
+            Collider collider = World.GetSystem<ColliderSystem>().Get(brick.Parent);
             if (HitBall(collider))
             {
                 Hit(brick);
@@ -25,7 +26,7 @@ namespace PIGMServer.Game.Systems
             brick.Altered = true;
 
             if (brick.Health == 0)
-                brick.Parent.Destroy();
+                brick.Parent.Destroy = true;
         }
 
         protected override Message GatherAlterations(Brick brick)
@@ -56,8 +57,9 @@ namespace PIGMServer.Game.Systems
 
         private void Destroy(Brick brick)
         {
-            brick.Parent.Destroy();
+            brick.Parent.Destroy = true;
         }
+
         public override SystemTypes GetSystemType()
         {
             return SystemTypes.Brick;

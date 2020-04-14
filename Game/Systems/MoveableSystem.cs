@@ -1,12 +1,13 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Game.Types;
+using PIGMServer.Game.Worlds;
 using PIGMServer.Network;
 
 namespace PIGMServer.Game.Systems
 {
     public class MoveableSystem : GameSystem<Movable>
     {
-        public MoveableSystem(string worldName) : base(worldName)
+        public MoveableSystem(SubWorld world) : base(world)
         { }
 
         protected override void Process(Movable component, float deltaTime)

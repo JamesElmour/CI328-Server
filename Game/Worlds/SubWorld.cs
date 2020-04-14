@@ -1,5 +1,6 @@
 ﻿using PIGMServer.Game.Systems;
 using PIGMServer.Network;
+using System;
 using System.Collections.Generic;
 
 namespace PIGMServer.Game.Worlds
@@ -7,7 +8,7 @@ namespace PIGMServer.Game.Worlds
     public abstract class SubWorld : World
     {
         public bool DummyWorld = false;
-        protected Dictionary<string, IGameSystem> Systems = new Dictionary<string, IGameSystem>();
+        protected Dictionary<Type, IGameSystem> Systems = new Dictionary<Type, IGameSystem>();
         protected Dictionary<string, GameEntity> Entities = new Dictionary<string, GameEntity>();
         private List<Message> PreviousMessages = new List<Message>();
 
@@ -65,16 +66,13 @@ namespace PIGMServer.Game.Worlds
         /// <param name="system">The system added to the subworld.</param>
         protected void AddSystem(IGameSystem system)
         {
-            string name = system.GetSystemType().ToString();
-            Systems.Add(name, system);
-
-            SystemManager.Add(Name, system);
+            Systems.Add(system.GetType(), system);
+            //SystemManager.Add(Name, system);
         }
 
         public T GetSystem<T>() where T : IGameSystem
         {
-            string name = typeof(T).Name;
-            return (T)Systems[name];
+            return (T) Systems[typeof(T)];
         }
 
         public List<Message> GatherAlterations(int priority)

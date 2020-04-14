@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PIGMServer.Game.Systems;
+using PIGMServer.Game.Worlds;
 using PIGMServer.Network;
 
 namespace PIGMServer.Game
@@ -15,11 +16,11 @@ namespace PIGMServer.Game
         protected readonly List<T> AlteredComponents        = new List<T>(ComponentLimit);
         protected readonly List<T> TemporaryComponents      = new List<T>(ComponentLimit);
         protected readonly int     Priority                 = 1;
-        protected readonly string  WorldName;
+        protected readonly SubWorld World;
 
-        public GameSystem(string worldName)
+        public GameSystem(SubWorld world)
         {
-            WorldName = worldName;
+            World = world;
         }
 
         public void Update(float deltaTime)
@@ -52,7 +53,10 @@ namespace PIGMServer.Game
 
             foreach (T component in TemporaryComponents)
             {
-                Process(component, deltaTime);
+                if (!component.GetParent.Destroy)
+                    Process(component, deltaTime);
+                else
+                    Components.Remove(component.GetName());
             }
         }
 
@@ -88,6 +92,11 @@ namespace PIGMServer.Game
             return Components[name];
         }
 
+        public T Get(GameEntity parent)
+        {
+            return Get(parent.Name);
+        }
+
         public void Remove(string name)
         {
             Components.Remove(name);
@@ -97,8 +106,6 @@ namespace PIGMServer.Game
         {
             string name = component.GetName();
             Components.Add(name, component);
-
-            SystemManager.MapComponentWorld(WorldName, component.GetName());
         }
 
         public void Add(IEnumerable<T> components)

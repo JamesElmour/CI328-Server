@@ -13,7 +13,7 @@ namespace PIGMServer.Game.Worlds
         private readonly int SubworldsPerFrame = 1;
         protected int SubworldIndex = 0;
 
-        public SuperWorld(int tps = 60)
+        public SuperWorld(int tps = 20)
         {
             Tps = tps;
             DeltaTime = 1.0f / (float)tps;

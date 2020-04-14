@@ -16,7 +16,7 @@ namespace PIGMServer.Game
         public GameComponent(GameEntity parent)
         {
             Parent = parent;
-            GenerateName();
+            Name = parent.Name;
         }
         private void GenerateName()
         {

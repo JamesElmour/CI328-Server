@@ -1,5 +1,6 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Game.Types;
+using PIGMServer.Game.Worlds;
 using PIGMServer.Network;
 using PIGMServer.Utilities;
 using System;
@@ -9,14 +10,14 @@ namespace PIGMServer.Game.Systems
 {
     public class BallSystem : GameSystem<Ball>
     {
-        public BallSystem(string worldName) : base(worldName)
+        public BallSystem(SubWorld world) : base(world)
         {
 
         }
 
         protected override void Process(Ball component, float deltaTime)
         {
-            Collider collider = component.Parent.Get<Collider>(SystemTypes.Collider);
+            Collider collider = World.GetSystem<ColliderSystem>().Get(component.Parent);
 
             PlayerBounce(component, collider);
             WallBounce(component);

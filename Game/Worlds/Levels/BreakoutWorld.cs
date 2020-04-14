@@ -15,11 +15,10 @@ namespace PIGMServer.Game.Worlds.Levels
 
         protected override void SetupSystems()
         {
-            AddSystem(new PlayerSystem(Name));
-            AddSystem(new MoveableSystem(Name));
-            AddSystem(new ColliderSystem(Name));
-            AddSystem(new BallSystem(Name));
-            AddSystem(new BrickSystem(Name));
+            AddSystem(new PlayerSystem(this));
+            AddSystem(new ColliderSystem(this));
+            AddSystem(new BallSystem(this));
+            AddSystem(new BrickSystem(this));
         }
 
         /// <summary>
@@ -37,8 +36,8 @@ namespace PIGMServer.Game.Worlds.Levels
         /// </summary>
         private void CreatePlayer()
         {
-            PlayerSystem playerSystem = SystemManager.GetSystem<PlayerSystem>(Name);
-            ColliderSystem colliderSystem = SystemManager.GetSystem<ColliderSystem>(Name);
+            PlayerSystem playerSystem = GetSystem<PlayerSystem>();
+            ColliderSystem colliderSystem = GetSystem<ColliderSystem>();
             GameEntity entity = new GameEntity("Player", new Vector2(300, 680), "Player");
             Player player = new Player(entity);
             Collider collider = new Collider(entity, 256, 32, true);
@@ -54,8 +53,8 @@ namespace PIGMServer.Game.Worlds.Levels
 
         private void CreateBall()
         {
-            BallSystem ballSystem = SystemManager.GetSystem<BallSystem>(Name);
-            ColliderSystem colliderSystem = SystemManager.GetSystem<ColliderSystem>(Name);
+            BallSystem ballSystem = GetSystem<BallSystem>();
+            ColliderSystem colliderSystem = GetSystem<ColliderSystem>();
             GameEntity entity = new GameEntity("Ball", new Vector2(300, 600), "Ball");
             Ball ball = new Ball(entity)
             {
@@ -84,8 +83,8 @@ namespace PIGMServer.Game.Worlds.Levels
                     Collider collider = new Collider(parent, 64, 16, false);
                     Brick brick = new Brick(parent, x, y);
 
-                    SystemManager.GetSystem<ColliderSystem>(Name).Add(collider);
-                    SystemManager.GetSystem<BrickSystem>(Name).Add(brick);
+                    GetSystem<ColliderSystem>().Add(collider);
+                    GetSystem<BrickSystem>().Add(brick);
 
                     parent.Add(brick);
                     parent.Add(collider);
