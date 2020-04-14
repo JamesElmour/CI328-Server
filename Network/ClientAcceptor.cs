@@ -48,6 +48,7 @@ namespace PIGMServer.Network
                 AddTCPClient(newClient);
             });
 
+            acceptThread.Name = "Accept Thread";
             acceptThread.Start();
 
             while (true)

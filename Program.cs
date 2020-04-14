@@ -40,6 +40,8 @@ namespace PIGMServer
 
                         ClientAcceptor.OwnerCreationFunc();
                     });
+
+                    worldThread.Name = "World Thread" + new Guid().ToString();
                     worldThread.Start();
 
                     return 1;
@@ -47,6 +49,7 @@ namespace PIGMServer
                 ClientAcceptor.OwnerCreationFunc();
                 ClientAcceptor.Start(server);
             });
+            managerThread.Name = "Manager Thread";
             managerThread.Start();
         }
     }
