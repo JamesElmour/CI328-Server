@@ -46,7 +46,7 @@ namespace PIGMServer.Game.Worlds
         /// </summary>
         public void Update()
         {
-            if (IsFull && ShouldUpdate())
+            if (ShouldUpdate() && IsFull)
             {
                 if (Clients.Count == AcceptLimit)
                 {
@@ -62,8 +62,9 @@ namespace PIGMServer.Game.Worlds
 
         private bool ShouldUpdate()
         {
-            double TimeTillUpdate = 1.0d / Tps / 2;
-            Thread.Sleep((int)(TimeTillUpdate * 500));
+            double TimeTillUpdate = 1.0d / Tps;
+            DeltaTime = (float)TimeTillUpdate;
+            Thread.Sleep((int)(TimeTillUpdate * 1000));
             return true;
         }
 
@@ -81,7 +82,7 @@ namespace PIGMServer.Game.Worlds
             SubWorld sub = SubWorlds[SubworldIndex];
             //Client client = Get(sub.WorldIndex);
             //SendQueue(client, sub.Update(DeltaTime));
-            sub.Update(0.01666666f);
+            sub.Update(DeltaTime);
         }
     }
 }
