@@ -1,5 +1,6 @@
 ﻿using PIGMServer.Game.Components;
 using PIGMServer.Game.Worlds;
+using PIGMServer.Game.Worlds.Levels;
 using PIGMServer.Network;
 using PIGMServer.Utilities;
 using System;
@@ -14,10 +15,10 @@ namespace PIGMServer.Game.Systems
 
         protected override void Process(Player component, float deltaTime)
         {
-            component.Direction = Math.Max(Math.Min(component.Direction, (short)(2)), (short)(0));
+            component.Direction = (ushort) Math.Max(Math.Min(component.Direction, (short)(2)), (short)(0));
 
             GameEntity parent = component.Parent;
-            short speed = component.Speed;
+            ushort speed = component.Speed;
             short direction = (short)(component.Direction - 1);
             short velocity = (short)(direction * speed * deltaTime);
 
@@ -25,6 +26,9 @@ namespace PIGMServer.Game.Systems
             component.Altered = true;
 
             parent.Position.x = Math.Max(Math.Min(parent.Position.x, (short)(1280)), (short)(0));
+
+            if (component.Lives <= 0)
+                ((BreakoutWorld) World).Dead = true;
         }
 
         protected override Message GatherAlterations(Player alteredComponent)
