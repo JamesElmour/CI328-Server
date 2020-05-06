@@ -67,7 +67,7 @@ namespace PIGMServer.Network
                         CheckClient(client);
                 }
 
-
+                Thread.Sleep(50);
             }
         }
 
