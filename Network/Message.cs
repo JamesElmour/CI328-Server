@@ -8,7 +8,8 @@ namespace PIGMServer.Network
         Utility,
         Player,
         Ball,
-        Brick
+        Brick,
+        PowerUp
     }
 
     public enum UtilityOps
@@ -27,7 +28,7 @@ namespace PIGMServer.Network
     public enum BallOps
     {
         Bounce,
-        Spawn
+        Create
     }
 
     public enum BrickOps
@@ -35,6 +36,27 @@ namespace PIGMServer.Network
         Hit,
         Destroyed,
         Spawn
+    }
+
+    public enum PowerUpOps
+    {
+        Activate,
+        SpeedballCreated,
+        SpeedballUsed,
+        MultiBallCreated,
+        MultiBallUsed,
+        RapidBallCreated,
+        RapidBallUsed,
+        QuadBallCreated,
+        QuadBallUsed,
+        ExendPlayerCreated,
+        ExendPlayerUsed,
+        ShrinkPlayerCreated,
+        ShrinkPlayerUsed,
+        BeefyBricksCreated,
+        BeefyBricksUsed,
+        InvincibilityCreated,
+        InvincibilityUsed
     }
 
 
@@ -65,9 +87,9 @@ namespace PIGMServer.Network
         {
             if (data.Length > 2)
             {
-                SuperOp = data[1];
-                SubOp = data[2];
-                Data = data.Skip(1).ToArray();
+                SuperOp = data[2];
+                SubOp = data[3];
+                Data = data.Skip(4).ToArray();
             }
         }
 
@@ -122,7 +144,7 @@ namespace PIGMServer.Network
 
         public byte[] GetData()
         {
-            return Data.Skip(3).ToArray();
+            return Data.ToArray();
         }
     }
 }
