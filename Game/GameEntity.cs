@@ -27,6 +27,7 @@ namespace PIGMServer.Game
         }
 
         public void Add(GameComponent component) => Components.Add(component.GetSystem(), component.Name);
+        public void Add(IGameComponent component) => Add((GameComponent) component);
 
         public string Get(SystemTypes type) => Components[type];
     }
