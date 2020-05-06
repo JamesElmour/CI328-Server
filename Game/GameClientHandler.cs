@@ -32,6 +32,9 @@ namespace PIGMServer.Game
                 case 1:
                     ProcessPlayerMesssage(client, message);
                     break;
+                case 4:
+                    ActivatePowerUp(client, message);
+                    break;
             }
         }
 
@@ -59,15 +62,7 @@ namespace PIGMServer.Game
 
         protected abstract void PlayerPositionChange(Client client, Message message);
 
-        private void PlayerUsePowerUp(Message message)
-        {
-
-        }
-
-        private void PlayerReady(Message message)
-        {
-
-        }
+        protected abstract void ActivatePowerUp(Client client, Message message);
         #endregion
 
     }
