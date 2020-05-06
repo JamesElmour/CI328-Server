@@ -9,14 +9,16 @@ namespace PIGMServer.Game
 {
     public abstract class GameComponent : IGameComponent
     {
-        public      string      Name        { get; private set; }
-        public      bool        Altered =   false;
+        public      string      Name            { get; private set; }
+        public      bool        Altered =       false;
+        public bool             IsJustCreated   { get; private set; }
         public      GameEntity  Parent;
 
         public GameComponent(GameEntity parent)
         {
             Parent = parent;
             Name = parent.Name;
+            IsJustCreated = true;
         }
         private void GenerateName()
         {
@@ -37,6 +39,16 @@ namespace PIGMServer.Game
         public string GetName()
         {
             return Name;
+        }
+
+        public void IsOldNow()
+        {
+            IsJustCreated = false;
+        }
+
+        public bool JustCreated()
+        {
+            return IsJustCreated;
         }
     }
 }
