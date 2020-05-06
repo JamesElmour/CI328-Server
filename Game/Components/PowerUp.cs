@@ -9,17 +9,23 @@ namespace PIGMServer.Game.Components
 {
     public class PowerUp : GameComponent
     {
-        public enum Types
+        public enum PowerUps
         {
-            Multiball,
-            Incinvibility,
-            Fastball,
-            WidePlayer,
-            NarrowPlayer
+            SpeedBall,
+            MultiBall,
+            RapidBall,
+            QuadBall,
+            ExendPlayer,
+            ShrinkPlayer,
+            BeefyBricks,
+            Invincibility
         }
-        public readonly Types Type;
+        public readonly PowerUps Type;
+        public float TimeTillEnd;
 
-        public PowerUp(GameEntity parent, Types type) : base(parent)
+        public bool JustCreated = true;
+
+        public PowerUp(GameEntity parent, PowerUps type) : base(parent)
         {
             Type = type;
         }
