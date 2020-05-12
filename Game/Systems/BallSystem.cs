@@ -19,8 +19,6 @@ namespace PIGMServer.Game.Systems
         /// <param name="world">Owning SubWorld.</param>
         public BallSystem(SubWorld world) : base(world)
         {
-            // This should transmit any new balls created.
-            TransmitCreations = true;
         }
 
         /// <summary>
