@@ -7,26 +7,35 @@ namespace PIGMServer.Game.Worlds
 {
     public abstract class SubWorld : World
     {
-        public bool DummyWorld = false;
-        protected Dictionary<Type, IGameSystem> Systems = new Dictionary<Type, IGameSystem>();
-        protected Dictionary<string, GameEntity> Entities = new Dictionary<string, GameEntity>();
-        private List<Message> PreviousMessages = new List<Message>();
+        public Client Client = null;                                    // SubWorld's Client.
+        public bool DummyWorld = false;                                 // If world is DummyWorld [For Testing]
+        protected Dictionary<Type, IGameSystem> Systems;                // SubWorld's Systems.
+        private List<Message> PreviousMessages = new List<Message>();   // List of Messages from previous GatherAlterations
+        public SubWorld Opponent;                                       // SubWorld's opponent
+        public int GatherPriority = 1;                                  // Current priority for gathering alteration messages.
+        public int WorldIndex { get; private set; }                     // Index of the SubWorld in the SuperWorld.
 
-        public int WorldIndex { get; private set; }
-
-        public SubWorld(int index)
+        /// <summary>
+        /// Create SubWorld with the given index and TCP Client.
+        /// </summary>
+        /// <param name="index">Index of SubWorld within SuperWorld</param>
+        /// <param name="client">TCP Client for the SubWorld</param>
+        public SubWorld(int index, Client client = null)
         {
+            // Create Systems and assign attributes.
+            Systems = new Dictionary<Type, IGameSystem>();
+            Client = client;
             WorldIndex = index;
         }
 
-        public MessageQueue Create()
+        /// <summary>
+        /// Create the SubWorld.
+        /// </summary>
+        public void Create()
         {
-            MessageQueue queue = new MessageQueue();
-
+            // Setup SubWorld systems and components.
             SetupSystems();
             SetupComponents();
-
-            return queue;
         }
 
         /// <summary>
@@ -64,37 +73,48 @@ namespace PIGMServer.Game.Worlds
         /// Add system to the subworld.
         /// </summary>
         /// <param name="system">The system added to the subworld.</param>
-        protected void AddSystem(IGameSystem system)
+        public void AddSystem(IGameSystem system)
         {
             Systems.Add(system.GetType(), system);
-            //SystemManager.Add(Name, system);
         }
 
+        /// <summary>
+        /// Get the given System from the SubWorld.
+        /// </summary>
+        /// <typeparam name="T">Type of System to get.</typeparam>
+        /// <returns>The requested System.</returns>
         public T GetSystem<T>() where T : IGameSystem
         {
             return (T) Systems[typeof(T)];
         }
 
+        /// <summary>
+        /// Gather alterations from SubWorld systems that are higher or equal priority to the provided priority.
+        /// </summary>
+        /// <param name="priority">System priority to gather.</param>
+        /// <returns>List of messages from Systems.</returns>
         public List<Message> GatherAlterations(int priority)
         {
+            // Setup List of messages.
             PreviousMessages = new List<Message>();
 
-            foreach (IGameSystem system in Systems.Values)
+            foreach (IGameSystem system in Systems.Values) // For each System in SubWorld...
             {
-                if (system.GetPriority() >= priority)
+                if (system.GetPriority() <= priority) // ... And they're under or equal to the priority...
                 {
+                    // Gather alterations from System.
                     PreviousMessages.AddRange(system.GetAlterations());
                 }
             }
 
+            // Return List of Messages.
             return PreviousMessages;
         }
 
-        public GameEntity GetEntity(string name)
-        {
-            return Entities[name];
-        }
-
+        /// <summary>
+        /// Gather alterations from previous gather.
+        /// </summary>
+        /// <returns>List of messages.</returns>
         public List<Message> GetPreviousAlterations()
         {
             return PreviousMessages;

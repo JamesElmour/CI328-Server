@@ -9,38 +9,52 @@ using System.Threading;
 
 namespace PIGMServer.Network
 {
+    /// <summary>
+    /// Static class that handles all incoming Client connections.
+    /// </summary>
     static class ClientAcceptor
     {
-        static readonly List<Client> clients = new List<Client>();
-        static readonly List<ClientOwner> acceptQueue = new List<ClientOwner>();
-        public static Func<int> OwnerCreationFunc = null;
+        static readonly List<Client> clients = new List<Client>();                  // Connected Clients.
+        static readonly List<ClientOwner> acceptQueue = new List<ClientOwner>();    // Owners waiting for Clients.
+        public static Func<int> OwnerCreationFunc = null;                           // Function to create new Client Owners.
 
+        /// <summary>
+        /// Add a TCP Client to the Acceptor.
+        /// </summary>
+        /// <param name="tcpClient">TCP Client to add.</param>
         public static void AddTCPClient(TcpClient tcpClient)
         {
-
-            if (acceptQueue.Count > 0)
+            if (acceptQueue.Count > 0) // ... If there are Owners waiting...
             {
+                // ... Take the first owner in the queue and hand over Client.
                 ClientOwner nextOwner = acceptQueue[0];
                 Client newClient = new Client(tcpClient);
                 clients.Add(newClient);
                 nextOwner.Give(newClient);
                 newClient.HandedTo(nextOwner);
 
+                // If the Owner can't accept anymore Clients, remove it.
                 if (!nextOwner.CanAcceptClient())
                 {
                     acceptQueue.Remove(nextOwner);
                 }
             }
-            else
+            else // ... Otherwise...
             {
+                // Create new Owner and assign Client.
                 OwnerCreationFunc();
                 AddTCPClient(tcpClient);
             }
 
         }
 
+        /// <summary>
+        /// Start the Acceptor with given TCP Listener.
+        /// </summary>
+        /// <param name="server">TCP Listener to use.</param>
         public static void Start(TcpListener server)
         {
+            // Create a new thread which accepts new connecting Clients.
             Thread acceptThread = new Thread(() =>
             {
                 while (true)
@@ -50,12 +64,13 @@ namespace PIGMServer.Network
                 }
             });
 
+            // Name and start the thread.
             acceptThread.Name = "Accept Thread";
             acceptThread.Start();
 
+            // Meanwhile continously check connected clients for new messages.
             while (true)
             {
-
                 List<Client> tempClients = clients;
                 int clientCount = tempClients.Count;
 
@@ -67,13 +82,18 @@ namespace PIGMServer.Network
                         CheckClient(client);
                 }
 
-                Thread.Sleep(50);
+                Thread.Sleep(5); // Preserve CPU.
             }
         }
 
+        /// <summary>
+        /// Send Message to the Client.
+        /// </summary>
+        /// <param name="client">Client to send Message to.</param>
+        /// <param name="message">Message to send.</param>
         public static void SendMessage(Client client, Message message)
         {
-            byte[] response = message.Encode();
+            byte[] response = message.Encode(true);
 
             try
             {
@@ -85,17 +105,25 @@ namespace PIGMServer.Network
             catch (IOException e)
             {
                 client.tcpClient.Close();
-                //client.Owner.Remove(client);
+
+                Console.WriteLine("Disconnecting client");
+                Console.WriteLine(e.Message.ToString());
             }
             catch (Exception e) { }
         }
 
+        /// <summary>
+        /// Queue the given Owner.
+        /// </summary>
+        /// <param name="owner">Owner to queue.</param>
         public static void QueueOwner(ClientOwner owner)
         {
             acceptQueue.Add(owner);
         }
 
+        #region Borrowed Code With Modifications.
         // Stolen from Mozilla ;)
+        // Using CC-BY-SA License, link to resource: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_server
         private static void CheckClient(Client appClient)
         {
             TcpClient client = appClient.tcpClient;
@@ -160,9 +188,12 @@ namespace PIGMServer.Network
 
                     // Send message to client owner.
                     Message message = new Message(decoded);
-                    appClient.Owner.HandleMessage(appClient, message);
+
+                    if(appClient.Owner != null)
+                        appClient.Owner.HandleMessage(appClient, message);
                 }
             }
         }
+        #endregion
     }
 }

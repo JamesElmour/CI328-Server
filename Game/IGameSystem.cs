@@ -8,14 +8,29 @@ using System.Threading.Tasks;
 
 namespace PIGMServer.Game
 {
+    /// <summary>
+    /// Interface for all Game Systems.
+    /// </summary>
     public interface IGameSystem
     {
+        /// <summary>
+        /// Update the System with DeltaTime.
+        /// </summary>
+        /// <param name="deltaTime">DeltaTime.</param>
         void Update(float deltaTime);
-        void Clear();
-        void Remove(string name);
-        //IGameComponent Get(string name);
+
         SystemTypes GetSystemType();
+
+        /// <summary>
+        /// Get System's priority.
+        /// </summary>
+        /// <returns>Returns priority.</returns>
         int GetPriority();
+
+        /// <summary>
+        /// Get alterations of System's Components.
+        /// </summary>
+        /// <returns>List of Messages containing alterations.</returns>
         List<Message> GetAlterations();
     }
 }

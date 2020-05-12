@@ -5,10 +5,12 @@ namespace PIGMServer.Game.Components
 {
     public class Player : GameComponent
     {
-        public ushort Direction = 1; // 0 = left, 1 = no movement, 2 = right
-        public ushort Speed = 200;
-        public ushort Lives = 3;
+        public ushort Lives = 5;     // Number of lives Player has.
 
+        /// <summary>
+        /// Create Player.
+        /// </summary>
+        /// <param name="parent">Player's parent Entity.</param>
         public Player(GameEntity parent) : base(parent)
         {
         }

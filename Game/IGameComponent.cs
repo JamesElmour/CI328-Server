@@ -8,7 +8,7 @@ namespace PIGMServer.Game
 {
     public interface IGameComponent
     {
-        GameEntity GetParent { get; }
+        GameEntity GameParent { get; }
         bool IsAltered();
         string GetName();
 
